@@ -9,15 +9,20 @@
     --bg-main: #f8fafc; /* 浅灰白 */
     --bg-phone: #f1f5f9; /* 柔和浅灰色手机壳 */
     --bg-panel: #ffffff; /* 纯白屏幕面板 */
-    --border-color: #e2e8f0; /* 细灰色线 */
-    --primary: #10b981; /* 翡翠绿 */
+    --border-color: rgba(15, 23, 42, 0.06); /* 细灰色线优化 */
+    --primary: #05c48f; /* 升级翡翠绿 */
     --accent: #0284c7; /* 科技蓝 */
-    --danger: #ef4444; /* 珊瑚红 */
-    --warning: #f59e0b; /* 警告黄 */
+    --danger: #f43f5e; /* 高雅玫瑰红 */
+    --warning: #eab308; /* 警告黄 */
     --text-primary: #0f172a; /* 深炭灰 */
     --text-secondary: #475569; /* 中灰 */
     --text-muted: #94a3b8; /* 浅灰 */
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+
+    /* 高级多层投影 */
+    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.03), 0 1px 2px rgba(15, 23, 42, 0.02);
+    --shadow-md: 0 4px 18px -2px rgba(15, 23, 42, 0.04), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+    --shadow-lg: 0 12px 36px -4px rgba(15, 23, 42, 0.06), 0 4px 16px -2px rgba(15, 23, 42, 0.03);
 }
 
 * {
@@ -106,21 +111,31 @@ body {
     width: 360px;
     height: 720px;
     border-radius: 40px;
-    background: #0f172a;
-    border: 8px solid #0f172a;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    background: #090d16;
+    border: 4px solid #1e293b;
+    box-shadow: 
+        0 15px 35px -5px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        0 30px 60px -15px rgba(0, 0, 0, 0.3);
     position: relative;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    transition: var(--transition);
 }
 
 /* 手机壳流光边框特效 */
 .phone-mockup.client-side {
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 0 15px rgba(16, 185, 129, 0.15);
+    box-shadow: 
+        0 30px 60px -15px rgba(0, 0, 0, 0.25),
+        0 0 30px rgba(16, 185, 129, 0.08);
+    border-color: rgba(16, 185, 129, 0.25);
 }
 .phone-mockup.doctor-side {
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 0 15px rgba(2, 132, 199, 0.15);
+    box-shadow: 
+        0 30px 60px -15px rgba(0, 0, 0, 0.25),
+        0 0 30px rgba(2, 132, 199, 0.08);
+    border-color: rgba(2, 132, 199, 0.25);
 }
 
 /* 顶部刘海 (Dynamic Island) */

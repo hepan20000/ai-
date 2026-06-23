@@ -2,25 +2,25 @@
 
 /* ==================== 1. 设计系统与变量 ==================== */
 :root {
-    --bg-darker: #020617;     /* 深蓝黑主背景 */
-    --bg-panel: rgba(6, 18, 36, 0.7); /* 面板半透明背景 */
-    --border-cyan: rgba(0, 240, 255, 0.25);
+    --bg-darker: #040508;     /* 升级为更高端纯粹的墨黑 */
+    --bg-panel: rgba(11, 19, 36, 0.55); /* 面板半透明背景更细腻 */
+    --border-cyan: rgba(0, 240, 255, 0.15);
     
-    /* 荧光主色调 */
-    --neon-cyan: #00f0ff;    /* 核心荧光蓝 */
-    --neon-green: #10b981;   /* 健康青绿 */
-    --neon-yellow: #f59e0b;  /* 亚健康警告黄 */
-    --neon-red: #ef4444;     /* 风险异常红 */
-    --neon-purple: #a855f7;  /* 科技紫 */
+    /* 精调高雅科技主色调，避免生硬高饱和 */
+    --neon-cyan: #00f3ff;    
+    --neon-green: #05c48f;   
+    --neon-yellow: #eab308;  
+    --neon-red: #f43f5e;     
+    --neon-purple: #a855f7;  
     
     /* 文本色 */
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
-    --text-muted: #64748b;
+    --text-muted: #475569;
     
-    /* 动画定义 */
-    --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-normal: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    /* 动画定义：使用超平滑贝塞尔曲线 */
+    --transition-fast: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-normal: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* ==================== 2. 全局基础样式 ==================== */
@@ -192,13 +192,30 @@ body.portrait-body {
 .cyber-panel {
     background: var(--bg-panel);
     border: 1px solid var(--border-cyan);
-    box-shadow: 0 0 20px rgba(0, 240, 255, 0.05), inset 0 0 10px rgba(0, 240, 255, 0.05);
-    border-radius: 4px;
-    padding: 16px;
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.4),
+        0 0 25px rgba(0, 240, 255, 0.03),
+        inset 0 0 15px rgba(0, 240, 255, 0.05);
+    border-radius: 12px; /* 升级为高级微圆角 */
+    padding: 18px;
     position: relative;
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(16px); /* 提升磨砂质感 */
+    -webkit-backdrop-filter: blur(16px);
     display: flex;
     flex-direction: column;
+    animation: panelFadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* 渐显与轻微位移动效，实现 Staggered 优雅呈现 */
+@keyframes panelFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 /* 科技风四角发光角标 */

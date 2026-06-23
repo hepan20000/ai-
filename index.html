@@ -6,20 +6,22 @@
     <title>AI主动健康管理一体化平台 - 演示门户</title>
     <meta name="description" content="中西医结合主动健康管理一体化平台高保真原型系统演示门户">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
 
         :root {
-            --bg-main: #f1f5f9;
-            --bg-card: rgba(255, 255, 255, 0.85);
-            --border-color: rgba(15, 23, 42, 0.08);
+            --bg-main: #06080e;
+            --bg-card: rgba(15, 23, 42, 0.45);
+            --bg-card-hover: rgba(22, 35, 60, 0.65);
+            --border-color: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(0, 240, 255, 0.3);
             --primary: #10b981; /* 翡翠绿 */
-            --accent: #0284c7; /* 科技蓝 */
+            --accent: #00f0ff; /* 科技冰蓝 */
             --danger: #ef4444; /* 珊瑚红 */
             --warning: #f59e0b; /* 警告黄 */
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --text-muted: #94a3b8;
-            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #475569;
+            --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * {
@@ -40,16 +42,16 @@
             position: relative;
         }
 
-        /* 浅色流光科技背景 */
+        /* 奢华深色流光科技背景 */
         body::before {
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             background: 
-                radial-gradient(circle at 10% 20%, rgba(2, 132, 199, 0.06) 0%, transparent 45%),
-                radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 45%),
-                linear-gradient(rgba(226, 232, 240, 0.5) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(226, 232, 240, 0.5) 1px, transparent 1px);
+                radial-gradient(circle at 10% 20%, rgba(0, 240, 255, 0.04) 0%, transparent 45%),
+                radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.04) 0%, transparent 45%),
+                linear-gradient(rgba(255, 255, 255, 0.003) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.003) 1px, transparent 1px);
             background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
             z-index: -2;
         }
@@ -57,18 +59,18 @@
         body::after {
             content: '';
             position: absolute;
-            top: 30%; left: 50%;
-            width: 600px; height: 600px;
-            background: radial-gradient(circle, rgba(2, 132, 199, 0.04) 0%, transparent 70%);
+            top: 25%; left: 50%;
+            width: 700px; height: 700px;
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.03) 0%, transparent 70%);
             transform: translate(-50%, -50%);
             z-index: -1;
-            filter: blur(50px);
+            filter: blur(80px);
             pointer-events: none;
         }
 
         header {
             text-align: center;
-            padding: 40px 20px 25px;
+            padding: 50px 20px 30px;
             max-width: 1000px;
             margin: 0 auto;
         }
@@ -77,71 +79,74 @@
             display: inline-flex;
             align-items: center;
             gap: 12px;
-            margin-bottom: 20px;
-            background: #ffffff;
+            margin-bottom: 24px;
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-color);
             padding: 8px 24px;
             border-radius: 30px;
-            box-shadow: 0 4px 6px -1px rgba(15,23,42,0.05);
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
         }
 
         .logo-dot {
-            width: 10px;
-            height: 10px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: var(--accent);
-            box-shadow: 0 0 10px rgba(2, 132, 199, 0.4);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.8);
             animation: pulse 2s infinite;
         }
 
         .logo-text {
             font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 2.5px;
             color: var(--text-secondary);
             font-weight: 700;
         }
 
         h1 {
-            font-size: 36px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            background: linear-gradient(120deg, #0f172a 30%, var(--accent) 70%, var(--primary) 100%);
+            font-size: 40px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #ffffff 30%, var(--accent) 75%, var(--primary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: 0.5px;
+            letter-spacing: -0.02em;
         }
 
         .subtitle {
             font-size: 14px;
             color: var(--text-secondary);
-            max-width: 600px;
+            max-width: 620px;
             margin: 0 auto;
-            line-height: 1.6;
+            line-height: 1.7;
+            font-weight: 300;
         }
 
         /* 核心业务流程流光拓扑图 */
         .topology-container {
-            max-width: 900px;
+            max-width: 960px;
             width: 90%;
-            margin: 15px auto 40px;
+            margin: 15px auto 45px;
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 24px;
             backdrop-filter: blur(20px);
-            padding: 30px 40px;
+            padding: 35px 40px;
             position: relative;
-            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.5);
         }
 
         .topology-title {
             font-size: 12px;
             color: var(--accent);
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 25px;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
             text-align: center;
             font-weight: 700;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
         }
 
         .topology-flow {
@@ -155,29 +160,35 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
-            width: 140px;
+            gap: 12px;
+            width: 150px;
             z-index: 2;
+            transition: var(--transition);
         }
 
         .node-icon-box {
-            width: 50px;
-            height: 50px;
-            border-radius: 16px;
-            background: #ffffff;
+            width: 54px;
+            height: 54px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.02);
             border: 1px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: center;
             transition: var(--transition);
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        .node:hover {
+            transform: translateY(-4px);
         }
 
         .node:hover .node-icon-box {
             border-color: var(--accent);
-            background: rgba(2, 132, 199, 0.03);
-            transform: translateY(-4px);
-            box-shadow: 0 8px 16px rgba(2, 132, 199, 0.1);
+            background: rgba(0, 240, 255, 0.05);
+            box-shadow: 0 8px 25px rgba(0, 240, 255, 0.25);
+            transform: scale(1.05);
         }
 
         .node-icon-box svg {
@@ -189,38 +200,41 @@
 
         .node:hover .node-icon-box svg {
             fill: var(--accent);
+            filter: drop-shadow(0 0 5px rgba(0, 240, 255, 0.5));
         }
 
         .node-name {
-            font-size: 11px;
-            font-weight: 700;
+            font-size: 12px;
+            font-weight: 600;
             color: var(--text-primary);
             text-align: center;
+            letter-spacing: 0.5px;
         }
 
         .node-desc {
-            font-size: 9px;
+            font-size: 10px;
             color: var(--text-secondary);
             text-align: center;
-            line-height: 1.3;
+            line-height: 1.4;
+            opacity: 0.8;
         }
 
         .link-line {
             flex-grow: 1;
-            height: 2px;
-            background: rgba(15,23,42,0.04);
+            height: 1px;
+            background: rgba(255, 255, 255, 0.06);
             position: relative;
-            margin: 0 -15px;
+            margin: 0 -10px;
             z-index: 1;
         }
 
         .link-pulse {
             position: absolute;
-            top: 0; left: 0;
-            width: 40px; height: 2px;
+            top: -0.5px; left: 0;
+            width: 50px; height: 2px;
             background: linear-gradient(90deg, transparent, var(--accent), transparent);
-            box-shadow: 0 0 8px rgba(2, 132, 199, 0.6);
-            animation: movePulse 3s linear infinite;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.8);
+            animation: movePulse 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
 
         .link-line:nth-child(4) .link-pulse {
@@ -230,51 +244,55 @@
         .link-line:nth-child(6) .link-pulse {
             animation-delay: 2s;
             background: linear-gradient(90deg, transparent, var(--primary), transparent);
-            box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
         }
 
         /* 演示入口卡片网格 */
         .portal-grid {
-            max-width: 1100px;
+            max-width: 1140px;
             width: 90%;
-            margin: 0 auto 50px;
+            margin: 0 auto 60px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            perspective: 1200px; /* 开启网格的3D视角 */
         }
 
         .portal-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 24px;
+            border-radius: 24px;
+            padding: 28px;
             text-decoration: none;
             color: inherit;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            gap: 20px;
-            min-height: 250px;
+            gap: 24px;
+            min-height: 270px;
             transition: var(--transition);
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(20px);
-            box-shadow: 0 10px 20px -5px rgba(15, 23, 42, 0.05);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4);
+            transform-style: preserve-3d; /* 启用卡片内子元素的3D呈现 */
         }
 
         .portal-card::before {
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.8) 60%, rgba(2, 132, 199, 0.02) 100%);
+            background: radial-gradient(circle at 100% 0%, rgba(0, 240, 255, 0.03) 0%, transparent 60%);
             opacity: 0;
             transition: var(--transition);
         }
 
         .portal-card:hover {
-            transform: translateY(-6px);
-            border-color: rgba(2, 132, 199, 0.25);
-            box-shadow: 0 20px 30px -10px rgba(15, 23, 42, 0.1);
+            transform: translateY(-8px) scale(1.02) rotateX(2.5deg) rotateY(-2.5deg);
+            border-color: var(--border-hover);
+            box-shadow: 
+                0 25px 50px -15px rgba(0, 0, 0, 0.6),
+                0 0 30px rgba(0, 240, 255, 0.08);
         }
 
         .portal-card:hover::before {
@@ -284,35 +302,39 @@
         .card-top {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
+            transform: translateZ(20px); /* 视差效果 */
+            transition: var(--transition);
         }
 
         .card-badge {
             align-self: flex-start;
             font-size: 9px;
             font-weight: 700;
-            letter-spacing: 1px;
-            padding: 3px 10px;
+            letter-spacing: 1.5px;
+            padding: 4px 12px;
             border-radius: 20px;
             text-transform: uppercase;
         }
 
-        .badge-screen { background: rgba(16, 185, 129, 0.08); color: var(--primary); border: 1px solid rgba(16, 185, 129, 0.15); }
-        .badge-back { background: rgba(2, 132, 199, 0.08); color: var(--accent); border: 1px solid rgba(2, 132, 199, 0.15); }
-        .badge-work { background: rgba(245, 158, 11, 0.08); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.15); }
-        .badge-interactive { background: rgba(239, 68, 68, 0.08); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.15); }
-        .badge-register { background: rgba(2, 132, 199, 0.08); color: var(--accent); border: 1px solid rgba(2, 132, 199, 0.15); }
+        .badge-screen { background: rgba(16, 185, 129, 0.1); color: var(--primary); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .badge-back { background: rgba(0, 240, 255, 0.1); color: var(--accent); border: 1px solid rgba(0, 240, 255, 0.2); }
+        .badge-work { background: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.2); }
+        .badge-interactive { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.2); }
+        .badge-register { background: rgba(0, 240, 255, 0.1); color: var(--accent); border: 1px solid rgba(0, 240, 255, 0.2); }
 
         .card-title {
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 700;
             color: var(--text-primary);
+            letter-spacing: 0.2px;
         }
 
         .card-desc {
-            font-size: 11.5px;
+            font-size: 12px;
             color: var(--text-secondary);
-            line-height: 1.5;
+            line-height: 1.6;
+            font-weight: 300;
         }
 
         .card-footer {
@@ -321,12 +343,13 @@
             justify-content: space-between;
             font-size: 11px;
             font-weight: 700;
-            color: var(--accent);
+            color: var(--text-secondary);
             transition: var(--transition);
+            transform: translateZ(10px);
         }
 
         .portal-card:hover .card-footer {
-            color: #000;
+            color: var(--accent);
         }
 
         .arrow-icon {
@@ -339,25 +362,27 @@
 
         .portal-card:hover .arrow-icon {
             transform: translateX(4px);
+            filter: drop-shadow(0 0 2px var(--accent));
         }
 
         footer {
             text-align: center;
-            padding: 30px 20px;
+            padding: 35px 20px;
             font-size: 10px;
             color: var(--text-muted);
             border-top: 1px solid var(--border-color);
-            background: #ffffff;
+            background: rgba(6, 8, 14, 0.8);
+            backdrop-filter: blur(10px);
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 0.5; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.1); }
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.15); }
         }
 
         @keyframes movePulse {
-            0% { left: -10%; }
-            100% { left: 110%; }
+            0% { left: -20%; }
+            100% { left: 120%; }
         }
     </style>
 </head>

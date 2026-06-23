@@ -8,27 +8,27 @@
 
 :root {
     /* 核心色彩系统 */
-    --bg-main: #06070a;
-    --bg-card: rgba(15, 20, 35, 0.65);
-    --bg-card-hover: rgba(22, 30, 52, 0.85);
-    --border-color: rgba(255, 255, 255, 0.08);
-    --border-color-active: rgba(0, 240, 255, 0.4);
+    --bg-main: #040508;
+    --bg-card: rgba(11, 16, 28, 0.55);
+    --bg-card-hover: rgba(16, 25, 45, 0.75);
+    --border-color: rgba(255, 255, 255, 0.05);
+    --border-color-active: rgba(0, 240, 255, 0.45);
     
     /* 渐变与主题色 */
-    --primary: #10b981; /* 翡翠绿 - 代表中医、自然与健康 */
-    --primary-glow: rgba(16, 185, 129, 0.15);
-    --accent: #00f0ff; /* 冰蓝 - 代表AI、科技与西医指标 */
+    --primary: #05c48f; /* 更高级翡翠绿 */
+    --primary-glow: rgba(5, 196, 143, 0.15);
+    --accent: #00f0ff; /* 科技冰蓝 */
     --accent-glow: rgba(0, 240, 255, 0.2);
     
-    --grad-primary: linear-gradient(135deg, #10b981, #059669);
-    --grad-accent: linear-gradient(135deg, #00f0ff, #0072ff);
-    --grad-mixed: linear-gradient(135deg, #00f0ff, #10b981);
-    --grad-warning: linear-gradient(135deg, #f97316, #ef4444);
+    --grad-primary: linear-gradient(135deg, #05c48f 0%, #009e73 100%);
+    --grad-accent: linear-gradient(135deg, #00f0ff 0%, #0066ff 100%);
+    --grad-mixed: linear-gradient(135deg, #00f0ff 0%, #05c48f 100%);
+    --grad-warning: linear-gradient(135deg, #ff7b00 0%, #e11d48 100%);
     
     /* 文字颜色 */
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
-    --text-muted: #64748b;
+    --text-muted: #475569;
     
     /* 五级预警评级色彩 */
     --lvl-1: #10b981; /* 绿 - 健康维护 */
@@ -1436,28 +1436,34 @@ header::before {
     overflow: hidden;
 }
 
-/* 核心卡片样式 */
 .cyber-card {
-    background: rgba(10, 17, 34, 0.65);
-    border: 1px solid rgba(2, 132, 199, 0.15);
-    border-radius: 12px;
+    background: rgba(10, 16, 32, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
     padding: 12px 16px;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45), inset 0 0 15px rgba(2, 132, 199, 0.05);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.3),
+        0 16px 40px -10px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     position: relative;
     overflow: hidden;
 }
 
 .cyber-card:hover {
-    border-color: rgba(2, 132, 199, 0.5);
-    box-shadow: 0 12px 40px 0 rgba(2, 132, 199, 0.3), inset 0 0 20px rgba(2, 132, 199, 0.1);
-    transform: translateY(-2px);
+    border-color: rgba(0, 240, 255, 0.3);
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.4),
+        0 24px 60px -12px rgba(0, 0, 0, 0.6),
+        0 0 25px rgba(0, 240, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform: translateY(-4px) scale(1.01);
 }
 
 /* 实时流水与微型呼吸灯 */
