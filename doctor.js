@@ -238,7 +238,11 @@ const recipeTemplates = {
 // ==========================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadFromLocalStorage();
+    try {
+        loadFromLocalStorage();
+    } catch(e) {
+        console.error('[doctor.js] loadFromLocalStorage 失败，使用默认数据:', e);
+    }
     
     // 初始化左侧导航事件
     const navItems = document.querySelectorAll('.nav-item');
@@ -327,20 +331,31 @@ function loadFromLocalStorage() {
         if (localStorage.getItem('docProfile_doc')) docProfile = JSON.parse(localStorage.getItem('docProfile_doc'));
     } catch (e) {}
     try {
-        if (localStorage.getItem('patients')) patients = JSON.parse(localStorage.getItem('patients'));
-    } catch (e) {}
+        if (localStorage.getItem('patients')) {
+            const localPatients = JSON.parse(localStorage.getItem('patients'));
+            // 版本校验：确保数据包含 risks 字段（新格式），否则丢弃旧数据
+            if (Array.isArray(localPatients) && localPatients.length > 0 && localPatients[0].risks) {
+                patients = localPatients;
+            } else {
+                console.warn('[doctor.js] patients 数据格式过旧，重置为默认数据');
+                localStorage.setItem('patients', JSON.stringify(patients));
+            }
+        }
+    } catch (e) { console.error('[doctor.js] 解析patients失败:', e); }
     try {
         if (localStorage.getItem('articles')) articles = JSON.parse(localStorage.getItem('articles'));
     } catch (e) {}
     
     const sideDocName = document.getElementById('side-doc-name');
-    const sideDocAvatar = document.getElementById('side-doc-avatar');
+    const sideDocTitle = document.getElementById('side-doc-title');
+    const headerDocName = document.getElementById('header-doc-name');
     if (sideDocName) {
-        sideDocName.innerText = (docProfile && docProfile.name) ? docProfile.name : '';
+        sideDocName.innerText = (docProfile && docProfile.name) ? docProfile.name : '张景岳';
     }
-    if (sideDocAvatar) {
-        sideDocAvatar.innerText = (docProfile && docProfile.name) ? docProfile.name.charAt(0) : '';
+    if (headerDocName) {
+        headerDocName.innerText = (docProfile && docProfile.name) ? docProfile.name : '张景岳';
     }
+    // 注意：不再覆盖 sideDocAvatar，因为里面已经是 <img> 标签
 }
 
 // ==========================================================================

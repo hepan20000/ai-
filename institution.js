@@ -345,7 +345,11 @@ let chatAudit = [
 
 document.addEventListener('DOMContentLoaded', () => {
     // 从 localStorage 加载潜在的状态同步
-    loadFromLocalStorage();
+    try {
+        loadFromLocalStorage();
+    } catch(e) {
+        console.error('[institution.js] loadFromLocalStorage 失败，使用默认数据:', e);
+    }
     
     // 初始化主面板路由事件
     const navItems = document.querySelectorAll('.nav-item');
@@ -408,34 +412,52 @@ function saveToLocalStorage() {
 }
 
 function loadFromLocalStorage() {
-    if (localStorage.getItem('doctorsApproval')) doctorsApproval = JSON.parse(localStorage.getItem('doctorsApproval'));
+    try {
+        if (localStorage.getItem('doctorsApproval')) doctorsApproval = JSON.parse(localStorage.getItem('doctorsApproval'));
+    } catch(e) {}
     
-    if (localStorage.getItem('products')) {
-        let localProducts = JSON.parse(localStorage.getItem('products'));
-        if (localProducts.length < 10 || !localProducts[0].hasOwnProperty('image')) {
+    try {
+        if (localStorage.getItem('products')) {
+            let localProducts = JSON.parse(localStorage.getItem('products'));
+            if (localProducts.length < 10 || !localProducts[0].hasOwnProperty('image')) {
+                localStorage.setItem('products', JSON.stringify(products));
+            } else {
+                products = localProducts;
+            }
+        } else {
             localStorage.setItem('products', JSON.stringify(products));
-        } else {
-            products = localProducts;
         }
-    } else {
-        localStorage.setItem('products', JSON.stringify(products));
-    }
+    } catch(e) {}
     
-    if (localStorage.getItem('packages')) {
-        let localPackages = JSON.parse(localStorage.getItem('packages'));
-        if (localPackages.length === 0 || !localPackages[0].hasOwnProperty('image')) {
+    try {
+        if (localStorage.getItem('packages')) {
+            let localPackages = JSON.parse(localStorage.getItem('packages'));
+            if (localPackages.length === 0 || !localPackages[0].hasOwnProperty('image')) {
+                localStorage.setItem('packages', JSON.stringify(packages));
+            } else {
+                packages = localPackages;
+            }
+        } else {
             localStorage.setItem('packages', JSON.stringify(packages));
-        } else {
-            packages = localPackages;
         }
-    } else {
-        localStorage.setItem('packages', JSON.stringify(packages));
-    }
+    } catch(e) {}
     
-    if (localStorage.getItem('banners')) banners = JSON.parse(localStorage.getItem('banners'));
-    if (localStorage.getItem('recommends')) recommends = JSON.parse(localStorage.getItem('recommends'));
-    if (localStorage.getItem('radarAlarms')) radarAlarms = JSON.parse(localStorage.getItem('radarAlarms'));
-    if (localStorage.getItem('patients')) patients = JSON.parse(localStorage.getItem('patients'));
+    try { if (localStorage.getItem('banners')) banners = JSON.parse(localStorage.getItem('banners')); } catch(e) {}
+    try { if (localStorage.getItem('recommends')) recommends = JSON.parse(localStorage.getItem('recommends')); } catch(e) {}
+    try { if (localStorage.getItem('radarAlarms')) radarAlarms = JSON.parse(localStorage.getItem('radarAlarms')); } catch(e) {}
+    
+    // patients 数据版本校验：确保包含 risks 字段（新格式）
+    try {
+        if (localStorage.getItem('patients')) {
+            const localPatients = JSON.parse(localStorage.getItem('patients'));
+            if (Array.isArray(localPatients) && localPatients.length > 0 && localPatients[0].risks) {
+                patients = localPatients;
+            } else {
+                console.warn('[institution.js] patients 数据格式过旧，重置为默认数据');
+                localStorage.setItem('patients', JSON.stringify(patients));
+            }
+        }
+    } catch(e) { console.error('[institution.js] 解析patients失败:', e); }
 }
 
 // ==========================================================================
