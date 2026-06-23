@@ -1424,62 +1424,76 @@ function drawTcmRadar(pat) {
 
 let currentEditingRecipeId = null;
 
-function renderRecipesPanel() {
-    // 1. 渲染方案的表格列表到 #recipes-list-tbody
-    const tbody = document.getElementById('recipes-list-tbody');
-    if (tbody) {
-        tbody.innerHTML = '';
-        if (recipesArchive.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:20px 0;">暂无开具的干预方案数据。</td></tr>`;
-        } else {
-            recipesArchive.forEach(recipe => {
-                const pat = patients.find(p => p.id === recipe.patientId);
-                const patName = pat ? pat.name : `未知居民(ID:${recipe.patientId})`;
-                
-                tbody.innerHTML += `
-                    <tr>
-                        <td><strong>${recipe.title}</strong></td>
-                        <td>${patName}</td>
-                        <td title="${recipe.diet}">${clipText(recipe.diet, 20)}</td>
-                        <td title="${recipe.sport}">${clipText(recipe.sport, 20)}</td>
-                        <td title="${recipe.sleep}">${clipText(recipe.sleep, 20)}</td>
-                        <td>${recipe.date}</td>
-                        <td>
-                            <div class="btn-group">
-                                <button class="btn-mini btn-primary" onclick="openEditRecipeModal(${recipe.id})">编辑</button>
-                                <button class="btn-mini btn-danger" onclick="deleteRecipe(${recipe.id})">删除</button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            });
-        }
-    }
-
-    // 2. 渲染弹窗中的居民下拉选择
+// 新增函数：仅在弹窗打开时渲染弹窗内的居民下拉列表与调理商品勾选框，避免面板切换时无意义的重复渲染
+function renderRecipeModalControls() {
+    // 1. 渲染弹窗中的居民下拉选择
     const select = document.getElementById('recp-patient-select');
     if (select) {
-        select.innerHTML = '';
-        patients.forEach(pat => {
-            select.innerHTML += `<option value="${pat.id}">${pat.name} (${pat.healthState === 'risk' ? '🔴风险' : pat.healthState === 'warning' ? '🟡亚健康' : '🟢健康'})</option>`;
-        });
+        let selectHtml = '';
+        if (Array.isArray(patients)) {
+            patients.forEach(pat => {
+                if (pat) {
+                    selectHtml += `<option value="${pat.id}">${pat.name || ''} (${pat.healthState === 'risk' ? '🔴风险' : pat.healthState === 'warning' ? '🟡亚健康' : '🟢健康'})</option>`;
+                }
+            });
+        }
+        select.innerHTML = selectHtml;
     }
 
-    // 3. 渲染弹窗中关联调理商品勾选框
+    // 2. 渲染弹窗中关联调理商品勾选框
     const container = document.getElementById('recp-goods-checkboxes');
     if (container) {
-        container.innerHTML = '';
-        if (products.length === 0) {
+        if (!Array.isArray(products) || products.length === 0) {
             container.innerHTML = `<span style="font-size:10px; color:var(--text-muted);">暂无机构商品库数据</span>`;
         } else {
+            let goodsHtml = '';
             products.forEach(p => {
-                container.innerHTML += `
-                    <label class="checkbox-label" style="display:inline-flex; align-items:center; margin-right:10px; margin-bottom:5px; font-size:11px; cursor:pointer;">
-                        <input type="checkbox" value="${p.id}" class="recp-goods-check" style="margin-right:4px;">
-                        <span>[${p.category}] ${p.name} (单价: ¥${p.price})</span>
-                    </label>
-                `;
+                if (p) {
+                    goodsHtml += `
+                        <label class="checkbox-label" style="display:inline-flex; align-items:center; margin-right:10px; margin-bottom:5px; font-size:11px; cursor:pointer;">
+                            <input type="checkbox" value="${p.id}" class="recp-goods-check" style="margin-right:4px;">
+                            <span>[${p.category || ''}] ${p.name || ''} (单价: ¥${p.price || 0})</span>
+                        </label>
+                    `;
+                }
             });
+            container.innerHTML = goodsHtml;
+        }
+    }
+}
+
+function renderRecipesPanel() {
+    // 1. 渲染方案的表格列表到 #recipes-list-tbody (使用临时字符串拼接，避免高频 DOM 操作)
+    const tbody = document.getElementById('recipes-list-tbody');
+    if (tbody) {
+        if (!Array.isArray(recipesArchive) || recipesArchive.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:20px 0;">暂无开具的干预方案数据。</td></tr>`;
+        } else {
+            let listHtml = '';
+            recipesArchive.forEach(recipe => {
+                if (recipe) {
+                    const pat = Array.isArray(patients) ? patients.find(p => p && p.id === recipe.patientId) : null;
+                    const patName = pat ? pat.name : `未知居民(ID:${recipe.patientId})`;
+                    
+                    listHtml += `
+                        <tr>
+                            <td><strong>${recipe.title || ''}</strong></td>
+                            <td>${patName}</td>
+                            <td title="${recipe.diet || ''}">${clipText(recipe.diet, 20)}</td>
+                            <td title="${recipe.sport || ''}">${clipText(recipe.sport, 20)}</td>
+                            <td title="${recipe.sleep || ''}">${clipText(recipe.sleep, 20)}</td>
+                            <td>${recipe.date || ''}</td>
+                            <td>
+                                <div class="btn-group">
+                                    <button class="btn-mini btn-primary" onclick="openEditRecipeModal(${recipe.id})">编辑</button>
+                                    <button class="btn-mini btn-danger" onclick="deleteRecipe(${recipe.id})">删除</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }
+            });
+            tbody.innerHTML = listHtml;
         }
     }
 }
@@ -1493,20 +1507,35 @@ function clipText(text, maxLen) {
 // 打开新增弹窗
 function openAddRecipeModal() {
     currentEditingRecipeId = null;
-    document.getElementById('recipe-modal-title').innerText = '个性化健康干预方案定制';
     
-    // 清空表单
-    document.getElementById('recp-title').value = '';
-    document.getElementById('recp-diet').value = '';
-    document.getElementById('recp-sport').value = '';
-    document.getElementById('recp-sleep').value = '';
-    document.getElementById('recp-advise').value = '';
+    // 仅在需要展示弹窗时按需渲染下拉框和商品列表
+    renderRecipeModalControls();
+    
+    const modalTitle = document.getElementById('recipe-modal-title');
+    if (modalTitle) modalTitle.innerText = '个性化健康干预方案定制';
+    
+    // 清空表单，增加防御性空值检查
+    const recpTitle = document.getElementById('recp-title');
+    const recpDiet = document.getElementById('recp-diet');
+    const recpSport = document.getElementById('recp-sport');
+    const recpSleep = document.getElementById('recp-sleep');
+    const recpAdvise = document.getElementById('recp-advise');
+    
+    if (recpTitle) recpTitle.value = '';
+    if (recpDiet) recpDiet.value = '';
+    if (recpSport) recpSport.value = '';
+    if (recpSleep) recpSleep.value = '';
+    if (recpAdvise) recpAdvise.value = '';
     
     const select = document.getElementById('recp-patient-select');
     if (select) select.disabled = false;
     
     const checks = document.querySelectorAll('.recp-goods-check');
-    checks.forEach(c => c.checked = false);
+    if (checks) {
+        checks.forEach(c => {
+            if (c) c.checked = false;
+        });
+    }
     
     const modal = document.getElementById('recipe-edit-modal');
     if (modal) modal.style.display = 'flex';
@@ -1515,19 +1544,30 @@ function openAddRecipeModal() {
 // 打开编辑弹窗
 function openEditRecipeModal(id) {
     currentEditingRecipeId = id;
-    document.getElementById('recipe-modal-title').innerText = '编辑健康干预方案';
     
-    const recipe = recipesArchive.find(r => r.id === id);
+    // 仅在需要展示弹窗时按需渲染下拉框和商品列表
+    renderRecipeModalControls();
+    
+    const modalTitle = document.getElementById('recipe-modal-title');
+    if (modalTitle) modalTitle.innerText = '编辑健康干预方案';
+    
+    const recipe = Array.isArray(recipesArchive) ? recipesArchive.find(r => r && r.id === id) : null;
     if (!recipe) {
         alert('未找到对应的干预方案数据！');
         return;
     }
     
-    document.getElementById('recp-title').value = recipe.title;
-    document.getElementById('recp-diet').value = recipe.diet;
-    document.getElementById('recp-sport').value = recipe.sport;
-    document.getElementById('recp-sleep').value = recipe.sleep;
-    document.getElementById('recp-advise').value = recipe.advise || '';
+    const recpTitle = document.getElementById('recp-title');
+    const recpDiet = document.getElementById('recp-diet');
+    const recpSport = document.getElementById('recp-sport');
+    const recpSleep = document.getElementById('recp-sleep');
+    const recpAdvise = document.getElementById('recp-advise');
+    
+    if (recpTitle) recpTitle.value = recipe.title || '';
+    if (recpDiet) recpDiet.value = recipe.diet || '';
+    if (recpSport) recpSport.value = recipe.sport || '';
+    if (recpSleep) recpSleep.value = recipe.sleep || '';
+    if (recpAdvise) recpAdvise.value = recipe.advise || '';
     
     const select = document.getElementById('recp-patient-select');
     if (select) {
@@ -1535,15 +1575,19 @@ function openEditRecipeModal(id) {
         select.disabled = true; // 编辑时不允许修改在管居民
     }
     
-    // 自动勾选商品
+    // 自动勾选商品，加入防护性检查
     const checks = document.querySelectorAll('.recp-goods-check');
-    checks.forEach(c => {
-        if (recipe.goodsIds && recipe.goodsIds.includes(parseInt(c.value))) {
-            c.checked = true;
-        } else {
-            c.checked = false;
-        }
-    });
+    if (checks) {
+        checks.forEach(c => {
+            if (c) {
+                if (recipe.goodsIds && recipe.goodsIds.includes(parseInt(c.value))) {
+                    c.checked = true;
+                } else {
+                    c.checked = false;
+                }
+            }
+        });
+    }
     
     const modal = document.getElementById('recipe-edit-modal');
     if (modal) modal.style.display = 'flex';
