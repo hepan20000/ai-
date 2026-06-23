@@ -180,44 +180,6 @@ let patients = [
             explanation: '营卫调和，经脉通畅，脏腑功能调顺，生命活力旺盛。'
         }
     }
-];        { disease: '房颤预测', rate: 18 },
-            { disease: '心力衰竭', rate: 15 },
-            { disease: '冠心病', rate: 22 },
-            { disease: '心动过速', rate: 30 },
-            { disease: '心动过缓', rate: 15 },
-            { disease: '心肌梗死', rate: 8 }
-        ],
-        tcm: {
-            meridian: '肝经 亚健康 (丑时)',
-            syndrome: '肝郁脾虚，气滞湿阻证',
-            symptoms: '情志抑郁、胸胁胀满、失眠多梦、食少腹胀。',
-            explanation: '肝失条达，气机郁滞，故见情志抑郁、胸胁胀满；木郁克土，脾失健运，则食少腹胀；气滞湿阻，心神不宁，则夜寐欠安。'
-        }
-    },
-    {
-        id: 506,
-        name: '陈*国',
-        phone: '139****8765',
-        gender: '男', age: '28岁',
-        group: 'temp',
-        healthState: 'normal',
-        metrics: { hr: 68, spo2: 99, bp: '115/72', sleep: 7.8, steps: 8500 },
-        starRating: '健康状态 ⭐️⭐️⭐️⭐️⭐️',
-        riskScores: [
-            { disease: '房颤预测', rate: 3 },
-            { disease: '心力衰竭', rate: 2 },
-            { disease: '冠心病', rate: 5 },
-            { disease: '心动过速', rate: 8 },
-            { disease: '心动过缓', rate: 5 },
-            { disease: '心肌梗死', rate: 0.5 }
-        ],
-        tcm: {
-            meridian: '肺经 正常 (寅时)',
-            syndrome: '脏腑平和，气血周流',
-            symptoms: '无明显不适。',
-            explanation: '营卫调和，经脉通畅，脏腑功能调顺，生命活力旺盛。'
-        }
-    }
 ];
 
 let docProfile = {

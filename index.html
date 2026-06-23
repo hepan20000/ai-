@@ -3,829 +3,512 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI主动健康管理一体化平台 - 机构级数据一览大屏</title>
-    <meta name="description" content="基于多模态体征采集与中西医融合AI算法的24小时不间断主动健康管理一览大屏。">
-    <!-- 引入 Outfit 与 Inter 现代字体 -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <title>AI主动健康管理一体化平台 - 演示门户</title>
+    <meta name="description" content="中西医结合主动健康管理一体化平台高保真原型系统演示门户">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+        :root {
+            --bg-main: #f1f5f9;
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --border-color: rgba(15, 23, 42, 0.08);
+            --primary: #10b981; /* 翡翠绿 */
+            --accent: #0284c7; /* 科技蓝 */
+            --danger: #ef4444; /* 珊瑚红 */
+            --warning: #f59e0b; /* 警告黄 */
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: 'Outfit', 'Noto Sans SC', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        /* 浅色流光科技背景 */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(2, 132, 199, 0.06) 0%, transparent 45%),
+                radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.06) 0%, transparent 45%),
+                linear-gradient(rgba(226, 232, 240, 0.5) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(226, 232, 240, 0.5) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+            z-index: -2;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            top: 30%; left: 50%;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(2, 132, 199, 0.04) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            filter: blur(50px);
+            pointer-events: none;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px 25px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .logo-box {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 8px 24px;
+            border-radius: 30px;
+            box-shadow: 0 4px 6px -1px rgba(15,23,42,0.05);
+        }
+
+        .logo-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 10px rgba(2, 132, 199, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        .logo-text {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+            font-weight: 700;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            background: linear-gradient(120deg, #0f172a 30%, var(--accent) 70%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* 核心业务流程流光拓扑图 */
+        .topology-container {
+            max-width: 900px;
+            width: 90%;
+            margin: 15px auto 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            padding: 30px 40px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+        }
+
+        .topology-title {
+            font-size: 12px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .topology-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            width: 140px;
+            z-index: 2;
+        }
+
+        .node-icon-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 16px;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .node:hover .node-icon-box {
+            border-color: var(--accent);
+            background: rgba(2, 132, 199, 0.03);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(2, 132, 199, 0.1);
+        }
+
+        .node-icon-box svg {
+            width: 24px;
+            height: 24px;
+            fill: var(--text-secondary);
+            transition: var(--transition);
+        }
+
+        .node:hover .node-icon-box svg {
+            fill: var(--accent);
+        }
+
+        .node-name {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .node-desc {
+            font-size: 9px;
+            color: var(--text-secondary);
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .link-line {
+            flex-grow: 1;
+            height: 2px;
+            background: rgba(15,23,42,0.04);
+            position: relative;
+            margin: 0 -15px;
+            z-index: 1;
+        }
+
+        .link-pulse {
+            position: absolute;
+            top: 0; left: 0;
+            width: 40px; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            box-shadow: 0 0 8px rgba(2, 132, 199, 0.6);
+            animation: movePulse 3s linear infinite;
+        }
+
+        .link-line:nth-child(4) .link-pulse {
+            animation-delay: 1s;
+        }
+
+        .link-line:nth-child(6) .link-pulse {
+            animation-delay: 2s;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+        }
+
+        /* 演示入口卡片网格 */
+        .portal-grid {
+            max-width: 1100px;
+            width: 90%;
+            margin: 0 auto 50px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .portal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 24px;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 20px;
+            min-height: 250px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 10px 20px -5px rgba(15, 23, 42, 0.05);
+        }
+
+        .portal-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.8) 60%, rgba(2, 132, 199, 0.02) 100%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .portal-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(2, 132, 199, 0.25);
+            box-shadow: 0 20px 30px -10px rgba(15, 23, 42, 0.1);
+        }
+
+        .portal-card:hover::before {
+            opacity: 1;
+        }
+
+        .card-top {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .card-badge {
+            align-self: flex-start;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .badge-screen { background: rgba(16, 185, 129, 0.08); color: var(--primary); border: 1px solid rgba(16, 185, 129, 0.15); }
+        .badge-back { background: rgba(2, 132, 199, 0.08); color: var(--accent); border: 1px solid rgba(2, 132, 199, 0.15); }
+        .badge-work { background: rgba(245, 158, 11, 0.08); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.15); }
+        .badge-interactive { background: rgba(239, 68, 68, 0.08); color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.15); }
+        .badge-register { background: rgba(2, 132, 199, 0.08); color: var(--accent); border: 1px solid rgba(2, 132, 199, 0.15); }
+
+        .card-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .card-desc {
+            font-size: 11.5px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent);
+            transition: var(--transition);
+        }
+
+        .portal-card:hover .card-footer {
+            color: #000;
+        }
+
+        .arrow-icon {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+            transform: translateX(0);
+            transition: var(--transition);
+        }
+
+        .portal-card:hover .arrow-icon {
+            transform: translateX(4px);
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            font-size: 10px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            background: #ffffff;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        @keyframes movePulse {
+            0% { left: -10%; }
+            100% { left: 110%; }
+        }
+    </style>
 </head>
-<body class="dashboard-body">
+<body>
 
-    <!-- 全局 SVG 渐变定义 -->
-    <svg style="width:0; height:0; position:absolute;" width="0" height="0">
-        <defs>
-            <linearGradient id="cyan-green-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#0284c7" />
-                <stop offset="100%" stop-color="#10b981" />
-            </linearGradient>
-            <linearGradient id="red-orange-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#ef4444" />
-                <stop offset="100%" stop-color="#f97316" />
-            </linearGradient>
-        </defs>
-    </svg>
-
-    <div class="app-container" id="appContainer">
-        
-        <!-- ==================== 头部大屏与系统统计 ==================== -->
+    <!-- 顶层主内容 -->
+    <main style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
         <header>
-            <div class="logo-section">
-                <div class="logo-icon">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12,2A10,10,0,0,0,2,12a9.89,9.89,0,0,0,2.26,6.33l-2,2a1,1,0,0,0-.21,1.09A1,1,0,0,0,3,22h9a10,10,0,0,0,0-20ZM12,20H5.41l1.5-1.5a1,1,0,0,0,0-1.42,10,10,0,1,1,6.5,2.92Zm2.5-11.5a1.5,1.5,0,1,0-1.5-1.5A1.5,1.5,0,0,0,14.5,8.5Zm-5,0a1.5,1.5,0,1,0-1.5-1.5A1.5,1.5,0,0,0,9.5,8.5Zm5,5a1.5,1.5,0,1,0,1.5,1.5A1.5,1.5,0,0,0,14.5,13.5Zm-5,0a1.5,1.5,0,1,0,1.5,1.5A1.5,1.5,0,0,0,9.5,13.5Z"/>
-                    </svg>
-                </div>
-                <div class="title-area">
-                    <h1>AI主动健康管理一体化平台</h1>
-                    <span>Active Health AI Integration Platform</span>
-                </div>
+            <div class="logo-box">
+                <span class="logo-dot"></span>
+                <span class="logo-text">Active Health Pro</span>
             </div>
-            
-            <div class="system-stats">
-                <div class="stat-item">
-                    <span class="stat-label">设备在线率</span>
-                    <span class="stat-value neon-cyan" id="deviceOnlineRatio">0 / 0</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">今日脑血管风险</span>
-                    <span class="stat-value" id="cardioAlertCount" style="color:var(--lvl-5);">0 人</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">今日情绪压力风险</span>
-                    <span class="stat-value" id="emotionAlertCount" style="color:var(--lvl-4);">0 人</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">今日睡眠风险</span>
-                    <span class="stat-value" id="sleepAlertCount" style="color:var(--lvl-3);">0 人</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">全网心率均值</span>
-                    <span class="stat-value neon-green" id="netAvgHeartRate" style="font-family:'Outfit';">72 bpm</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">日均步数均值</span>
-                    <span class="stat-value neon-cyan" id="netAvgSteps" style="font-family:'Outfit';">6,230 步</span>
-                </div>
-            </div>
+            <h1>AI主动健康管理一体化平台</h1>
+            <p class="subtitle">连接智能手表、在管居民、调理医生与医疗机构的中西医结合主动健康管理平台，实现24小时智能监测、AI评估预警与线上线下一体化干预。</p>
         </header>
 
-        <!-- ==================== 核心三栏大屏 (自适应一屏流) ==================== -->
-        <main class="main-dashboard-grid">
+        <!-- 拓扑流程图 -->
+        <section class="topology-container">
+            <div class="topology-title">智能主动健康服务双向闭环链条</div>
+            <div class="topology-flow">
+                <!-- 节点 1 -->
+                <div class="node">
+                    <div class="node-icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm0-4h-2V7h2v8z"/></svg>
+                    </div>
+                    <span class="node-name">智能手表多模态体征</span>
+                    <span class="node-desc">心率、血氧、血压、睡眠时长、今日步数</span>
+                </div>
+                
+                <div class="link-line"><div class="link-pulse"></div></div>
+                
+                <!-- 节点 2 -->
+                <div class="node">
+                    <div class="node-icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                    </div>
+                    <span class="node-name">AI 大屏预警</span>
+                    <span class="node-desc">三级健康评估、未来疾病风险预测、警情雷达</span>
+                </div>
+                
+                <div class="link-line"><div class="link-pulse"></div></div>
+                
+                <!-- 节点 3 -->
+                <div class="node">
+                    <div class="node-icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    </div>
+                    <span class="node-name">医生在线干预</span>
+                    <span class="node-desc">AI食疗运动起居方案、IM快捷常用语督办</span>
+                </div>
+                
+                <div class="link-line"><div class="link-pulse"></div></div>
+                
+                <!-- 节点 4 -->
+                <div class="node">
+                    <div class="node-icon-box">
+                        <svg viewBox="0 0 24 24"><path d="M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/></svg>
+                    </div>
+                    <span class="node-name">线下就医/转诊</span>
+                    <span class="node-desc">引流至合作中医院、提供手表健康数据</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 卡片网格 -->
+        <section class="portal-grid">
             
-            <!-- 左侧板块：统计指标 -->
-            <section class="grid-card-column">
-                <!-- 机构医生数卡片 -->
-                <div class="cyber-card card-doctors" style="height: calc(50% - 5px);">
-                    <div class="card-header-row">
-                        <span class="card-tag"><svg class="title-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-1.99.9-1.99 2L3 19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 11h-4v4h-2v-4H8v-2h4V8h2v4h4v2z" fill="#38bdf8"/></svg>机构资质</span>
-                        <button class="more-btn" onclick="openDrilldown('doctors')">更多明细 ➔</button>
-                    </div>
-                    <div class="card-body-content">
-                        <div class="stat-row">
-                            <span class="main-label">机构入驻医生数</span>
-                            <span class="stat-desc-sub">较上周 +2 人</span>
-                        </div>
-                        <div class="huge-number-container" style="margin-bottom: 2px;">
-                            <span class="huge-neon-number text-neon-green" id="activeDoctorsCount">0</span>
-                            <span class="huge-unit">人</span>
-                        </div>
-                        <!-- 职称分布进度条 -->
-                        <div class="mini-dist-section" style="display:flex; flex-direction:column; gap:4px;">
-                            <div style="display:flex; justify-content:space-between; font-size:9px; color:var(--text-secondary); line-height: 1;">
-                                <span>高级职称</span>
-                                <span id="distSeniorCount">2人 (50%)</span>
-                            </div>
-                            <div class="mini-bar-bg" style="height:3px; background:rgba(255,255,255,0.05); border-radius:1.5px; overflow:hidden;">
-                                <div class="mini-bar-fill" id="distSeniorBar" style="width:50%; height:100%; background: #10b981; box-shadow: 0 0 6px #10b981;"></div>
-                            </div>
-                            <div style="display:flex; justify-content:space-between; font-size:9px; color:var(--text-secondary); line-height: 1;">
-                                <span>中级/初级</span>
-                                <span id="distJuniorCount">2人 (50%)</span>
-                            </div>
-                            <div class="mini-bar-bg" style="height:3px; background:rgba(255,255,255,0.05); border-radius:1.5px; overflow:hidden;">
-                                <div class="mini-bar-fill" id="distJuniorBar" style="width:50%; height:100%; background: #0284c7; box-shadow: 0 0 6px #0284c7;"></div>
-                            </div>
-                        </div>
-                    </div>
+            <!-- 卡片 1 -->
+            <a href="dashboard.html" class="portal-card">
+                <div class="card-top">
+                    <span class="card-badge badge-screen">数据大屏</span>
+                    <h2 class="card-title">机构数据一览大屏</h2>
+                    <p class="card-desc">展示生理数字人、智能手表实时健康画像指标、未来疾病风险预测（脑血管、心力衰竭等）柱状图、中医脏腑辨证盘，以及机构实时风险雷达警情跟进与督办弹窗。</p>
                 </div>
-
-                <!-- 管理用户数卡片 -->
-                <div class="cyber-card card-users" style="margin-top: 10px; height: calc(50% - 5px);">
-                    <div class="card-header-row">
-                        <span class="card-tag"><svg class="title-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#38bdf8"/></svg>居民档案</span>
-                        <button class="more-btn" onclick="openDrilldown('users')">更多明细 ➔</button>
-                    </div>
-                    <div class="card-body-content">
-                        <div class="stat-row">
-                            <span class="main-label">平台在管居民数</span>
-                            <span class="stat-desc-sub">本月新增 +48 人</span>
-                        </div>
-                        <div class="huge-number-container" style="margin-bottom: 2px;">
-                            <span class="huge-neon-number text-neon-cyan" id="activeUsersCount">0</span>
-                            <span class="huge-unit">人</span>
-                        </div>
-                        <!-- 性别与年龄分布 -->
-                        <div class="mini-dist-section" style="display:flex; flex-direction:column; gap:4px;">
-                            <div style="display:flex; justify-content:space-between; font-size:9px; color:var(--text-secondary); line-height: 1;">
-                                <span>男 / 女比例</span>
-                                <span id="distGenderRatio">75% / 25%</span>
-                            </div>
-                            <div class="mini-bar-bg" style="height:3px; background:rgba(255,255,255,0.05); border-radius:1.5px; overflow:hidden; display:flex;">
-                                <div id="distMaleBar" style="width:75%; height:100%; background: #0284c7; box-shadow: 0 0 6px #0284c7;"></div>
-                                <div id="distFemaleBar" style="width:25%; height:100%; background: #ec4899; box-shadow: 0 0 6px #ec4899;"></div>
-                            </div>
-                            <div style="display:flex; justify-content:space-between; font-size:9px; color:var(--text-secondary); line-height: 1;">
-                                <span>平均年龄</span>
-                                <span id="distAvgAge">50 岁</span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="card-footer">
+                    <span>进入大屏展示端 (dashboard.html)</span>
+                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M5 13h11.86l-5.43 5.43L13 20l8-8-8-8-1.57 1.57 5.43 5.43H5v2z"/></svg>
                 </div>
-            </section>
-            
-            <!-- 中间板块：健康状态与风险警告 -->
-            <section class="grid-card-column">
-                <!-- 每日健康状态汇总 -->
-                <div class="cyber-card card-health-summary" style="height: calc(50% - 7.5px); min-height: 180px;">
-                    <div class="card-header-row">
-                        <span class="card-tag"><svg class="title-icon" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" fill="#38bdf8"/></svg>每日健康状态汇总</span>
-                        <button class="more-btn" onclick="openDrilldown('users')">状态明细 ➔</button>
-                    </div>
-                    <div class="health-summary-container">
-                        <div class="chart-canvas-box">
-                            <canvas id="healthStatusCanvas" width="130" height="130"></canvas>
-                        </div>
-                        <div class="chart-legends" id="statusLegendsBox">
-                            <!-- 动态渲染正常、亚健康、风险比例 -->
-                        </div>
-                    </div>
+            </a>
+
+            <!-- 卡片 2 -->
+            <a href="doctor_register.html" class="portal-card">
+                <div class="card-top">
+                    <span class="card-badge badge-register">医生在线入驻</span>
+                    <h2 class="card-title">医生在线入驻申请入口</h2>
+                    <p class="card-desc">自主填报资质信息，上传医师执业证与职称证书，勾选擅长病种与理疗特长，并撰写 500 字诊疗特色介绍。提交后数据将自动同步写入机构待审批单队列。</p>
                 </div>
-
-                <!-- 每日预警人数 -->
-                <div class="cyber-card card-cardio-alerts" style="margin-top: 15px; height: calc(50% - 7.5px); min-height: 180px;">
-                    <div class="card-header-row">
-                        <span class="card-tag"><svg class="title-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z" fill="#ef4444"/></svg>每日预警人数</span>
-                        <button class="more-btn" onclick="openDrilldown('alerts')">查看明细 ➔</button>
-                    </div>
-                    <div class="cardio-alerts-container">
-                        <div class="alert-count-box">
-                            <span class="alert-count-label">今日预警总数</span>
-                            <div class="alert-pulse-number">
-                                <span class="huge-neon-number text-neon-red" id="alertsTodayNum">0</span>
-                                <span class="huge-unit" style="color:var(--lvl-5);">人</span>
-                                <div class="red-breath-dot" id="redBreathLight"></div>
-                            </div>
-                            <!-- 子类型警情小明细 -->
-                            <div class="alert-sub-breakdown" style="margin-top: 8px; font-size: 10px; color: var(--text-secondary); display: flex; flex-direction: column; gap: 3px;">
-                                <div>脑血管: <span class="text-neon-red" id="subAlertCardio" style="font-weight: 700;">0</span> 人</div>
-                                <div>情绪压力: <span class="text-neon-yellow" id="subAlertEmotion" style="font-weight: 700;">0</span> 人</div>
-                                <div>睡眠风险: <span class="text-neon-cyan" id="subAlertSleep" style="font-weight: 700;">0</span> 人</div>
-                            </div>
-                        </div>
-                        <div class="trend-canvas-box">
-                            <span class="trend-title">近7日警情趋势</span>
-                            <canvas id="alertsTrendCanvas" width="190" height="100"></canvas>
-                        </div>
-                    </div>
+                <div class="card-footer">
+                    <span>提报资质申请 (doctor_register.html)</span>
+                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M5 13h11.86l-5.43 5.43L13 20l8-8-8-8-1.57 1.57 5.43 5.43H5v2z"/></svg>
                 </div>
-            </section>
-            
-            <!-- 右侧板块：商业排行与设备状态 -->
-            <section class="grid-card-column">
-                <!-- 商品套餐销售情况 -->
-                <div class="cyber-card card-sales-rank">
-                    <div class="card-header-row">
-                        <span class="card-tag"><svg class="title-icon" viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" fill="#38bdf8"/></svg>商品套餐销售情况</span>
-                        <button class="more-btn" onclick="openDrilldown('sales')">销售明细 ➔</button>
-                    </div>
-                    <div class="sales-rank-body">
-                        <div class="rank-title-sub">销售量前 5 排行榜</div>
-                        <div class="sales-list-box" id="salesRankList">
-                            <!-- 动态排行列表 -->
-                        </div>
-                    </div>
+            </a>
+
+            <!-- 卡片 3 -->
+            <a href="institution.html" class="portal-card">
+                <div class="card-top">
+                    <span class="card-badge badge-back">管理后台</span>
+                    <h2 class="card-title">机构端管理后台</h2>
+                    <p class="card-desc">运营管理及配置中心：包含医生提报入驻审批、收费调理包发布与调理商品超卖联动控制、首屏 CMS Banner 与推荐名医权重分值降序重排，以及医患沟通日志导出和医生响应绩效考核表。</p>
                 </div>
-
-                <!-- 智能设备连接率 -->
-                <div class="cyber-card card-device-status" style="margin-top: 15px;">
-                    <div class="card-header-row">
-                        <span class="card-tag"><svg class="title-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 10V7h-2v5.4l3.6 2.1 1-1.7-2.6-1.8z" fill="#38bdf8"/></svg>智能设备连接数</span>
-                        <button class="more-btn" onclick="openDrilldown('devices')">设备明细 ➔</button>
-                    </div>
-                    <div class="device-status-body">
-                        <div class="device-chart-box">
-                            <canvas id="deviceConnectionCanvas" width="120" height="120"></canvas>
-                        </div>
-                        <div class="device-info-text">
-                            <div class="dev-info-item">
-                                <span class="dev-lbl">在线连接设备</span>
-                                <span class="dev-val text-neon-cyan" id="onlineDevicesCount">0 台</span>
-                            </div>
-                            <div class="dev-info-item">
-                                <span class="dev-lbl">总发放手表数</span>
-                                <span class="dev-val" id="totalDevicesCount">0 台</span>
-                            </div>
-                            <div class="dev-info-item">
-                                <span class="dev-lbl">电量低预警数</span>
-                                <span class="dev-val text-neon-red" id="lowBatteryCount">0 台</span>
-                            </div>
-                        </div>
-                    </div>
+                <div class="card-footer">
+                    <span>进入机构管理端 (institution.html)</span>
+                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M5 13h11.86l-5.43 5.43L13 20l8-8-8-8-1.57 1.57 5.43 5.43H5v2z"/></svg>
                 </div>
-            </section>
-        </main>
-        
-        <footer>
-            <a href="portal.html" class="back-portal-btn">返回统一门户 ➔</a>
-        </footer>
-    </div>
+            </a>
 
-    <!-- ==================== 5 大全屏磨砂毛玻璃下钻明细模态弹窗 ==================== -->
-
-    <!-- 1. 名医专家执业明细下钻弹窗 -->
-    <div class="drilldown-overlay" id="drilldown-doctors-modal" onclick="closeDrilldown()">
-        <div class="drilldown-container" onclick="event.stopPropagation()">
-            <div class="drilldown-close" onclick="closeDrilldown()">✕</div>
-            <div class="drilldown-header">
-                <h2>🏥 机构入驻医生执业管理明细</h2>
-            </div>
-            <div class="drilldown-split-layout" style="grid-template-columns: 1fr;">
-                <!-- 右栏：列表与搜索 -->
-                <div class="drilldown-right-table">
-                    <div class="table-filter-bar">
-                        <input type="text" class="cyber-input" id="searchDoctorInput" placeholder="输入医生姓名检索..." oninput="renderDoctorDrilldownList()">
-                        <select class="cyber-select" id="filterDoctorDept" onchange="renderDoctorDrilldownList()">
-                            <option value="">全部科室</option>
-                            <option value="中医内科">中医内科</option>
-                            <option value="针灸科">针灸科</option>
-                            <option value="脾胃调理专科">脾胃调理专科</option>
-                            <option value="全科健康管理">全科健康管理</option>
-                        </select>
-                    </div>
-                    <div class="table-scroll-container">
-                        <table class="drilldown-table">
-                            <thead>
-                                <tr>
-                                    <th>医生姓名</th>
-                                    <th>所属科室</th>
-                                    <th>职称</th>
-                                    <th>今日预警处理</th>
-                                    <th>理疗方案下发</th>
-                                </tr>
-                            </thead>
-                            <tbody id="drilldownDoctorTableBody">
-                                <!-- 动态渲染 -->
-                            </tbody>
-                        </table>
-                    </div>
+            <!-- 卡片 4 -->
+            <a href="doctor.html" class="portal-card">
+                <div class="card-top">
+                    <span class="card-badge badge-work">医生工作台</span>
+                    <h2 class="card-title">医生端工作台</h2>
+                    <p class="card-desc">执业工作中心：支持执业名片修改及科普文创音视频发布管理；随访分组并强制置顶高危在管居民；动态 SVG 30/90天趋势折线对比；中医干预调理包一键模板下发及历史归档自循环。</p>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 2. 在管居民健康监控下钻弹窗 -->
-    <div class="drilldown-overlay" id="drilldown-users-modal" onclick="closeDrilldown()">
-        <div class="drilldown-container" onclick="event.stopPropagation()">
-            <div class="drilldown-close" onclick="closeDrilldown()">✕</div>
-            <div class="drilldown-header">
-                <h2>👤 机构在管居民多维健康监控</h2>
-            </div>
-            <!-- 顶部三色卡片联动过滤 -->
-            <div class="user-status-filter-row">
-                <div class="filter-status-card filter-normal active" id="filterCardNormal" onclick="selectStatusFilter('正常')">
-                    <span class="card-circle normal-dot"></span>
-                    <span class="card-text">健康/正常</span>
-                    <span class="card-num" id="filterNormalNum">0</span>
+                <div class="card-footer">
+                    <span>进入医生工作台 (doctor.html)</span>
+                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M5 13h11.86l-5.43 5.43L13 20l8-8-8-8-1.57 1.57 5.43 5.43H5v2z"/></svg>
                 </div>
-                <div class="filter-status-card filter-subhealth" id="filterCardSub" onclick="selectStatusFilter('亚健康')">
-                    <span class="card-circle sub-dot"></span>
-                    <span class="card-text">亚健康</span>
-                    <span class="card-num" id="filterSubNum">0</span>
+            </a>
+
+            <!-- 卡片 5 -->
+            <a href="doctor_connect.html" class="portal-card">
+                <div class="card-top">
+                    <span class="card-badge badge-interactive">双机演练</span>
+                    <h2 class="card-title">医患联动会话模拟器</h2>
+                    <p class="card-desc">高保真双机同屏演练：C端搜医生并申请，B端医生工作台审批激活；手机平滑伸展拉宽，开启 IM 双栏会话；挂载的手表看板 30s 倒计时刷新，血氧暴降警报，及常用语就医指导下的警情自动解除闭环。</p>
                 </div>
-                <div class="filter-status-card filter-risk" id="filterCardRisk" onclick="selectStatusFilter('风险')">
-                    <span class="card-circle risk-dot"></span>
-                    <span class="card-text">风险状态</span>
-                    <span class="card-num" id="filterRiskNum">0</span>
+                <div class="card-footer">
+                    <span>开启医患会话演练 (doctor_connect.html)</span>
+                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M5 13h11.86l-5.43 5.43L13 20l8-8-8-8-1.57 1.57 5.43 5.43H5v2z"/></svg>
                 </div>
-            </div>
-            <div class="drilldown-right-table" style="margin-top: 15px; height: calc(100% - 150px);">
-                <div class="table-filter-bar">
-                    <input type="text" class="cyber-input" id="searchUserInput" placeholder="输入居民姓名/手机号快速过滤..." oninput="renderUserDrilldownList()">
-                    <input type="text" class="cyber-input" id="searchUserDocInput" placeholder="责任医生姓名过滤..." oninput="renderUserDrilldownList()">
+            </a>
+
+            <!-- 卡片 6 -->
+            <a href="system_design.html" class="portal-card">
+                <div class="card-top">
+                    <span class="card-badge" style="background:rgba(139,92,246,0.1); color:#6d28d9; border:1px solid rgba(139,92,246,0.2);">系统设计</span>
+                    <h2 class="card-title">角色权限 &amp; 业务流程图</h2>
+                    <p class="card-desc">可视化系统设计文档：① 角色权限矩阵 — 5大角色（超级管理员/机构管理员/医生/居民/访客）× 7大功能模块，权限等级清晰标注；② 泳道式业务流程图 — Draw.io 风格，覆盖体征采集 → AI预警 → 医生干预 → 闭环处理全链路。</p>
                 </div>
-                <div class="table-scroll-container">
-                    <table class="drilldown-table">
-                        <thead>
-                            <tr>
-                                <th>居民姓名</th>
-                                <th>健康状态</th>
-                                <th>心率</th>
-                                <th>血压</th>
-                                <th>血氧</th>
-                                <th>步数</th>
-                                <th>睡眠</th>
-                                <th>责任医生</th>
-                                <th>最后心跳</th>
-                                <th>操作</th>
-                            </tr>
-                        </thead>
-                        <tbody id="drilldownUserTableBody">
-                            <!-- 动态渲染 -->
-                        </tbody>
-                    </table>
+                <div class="card-footer">
+                    <span>查看系统设计文档 (system_design.html)</span>
+                    <svg class="arrow-icon" viewBox="0 0 24 24"><path d="M5 13h11.86l-5.43 5.43L13 20l8-8-8-8-1.57 1.57 5.43 5.43H5v2z"/></svg>
                 </div>
-            </div>
-        </div>
-    </div>
+            </a>
 
-    <!-- 3. 每日脑血管与疾病风险预警督办弹窗 -->
-    <div class="drilldown-overlay" id="drilldown-alerts-modal" onclick="closeDrilldown()">
-         <div class="drilldown-container" onclick="event.stopPropagation()">
-             <div class="drilldown-close" onclick="closeDrilldown()">✕</div>
-             <div class="drilldown-header">
-                 <h2>🚨 每日预警明细一览看板</h2>
-             </div>
-             <div class="drilldown-split-layout">
-                 <!-- 左栏：指标统计 -->
-                 <div class="drilldown-left-summary">
-                     <div class="summary-mini-card">
-                         <span class="mini-lbl">今日预警总数</span>
-                         <span class="mini-val text-neon-red" id="alertTotalSum">0 次</span>
-                     </div>
-                     <div class="summary-mini-card">
-                         <span class="mini-lbl">待处理预警数</span>
-                         <span class="mini-val text-neon-yellow" id="alertPendingSum">0 个</span>
-                     </div>
-                     <div class="summary-mini-card">
-                         <span class="mini-lbl">医生平均响应时效</span>
-                         <span class="mini-val text-neon-green" style="font-family:'Outfit';">12 min</span>
-                     </div>
-                 </div>
-                 <!-- 右栏：列表与督办 -->
-                 <div class="drilldown-right-table">
-                     <div class="alert-status-tabs">
-                         <button class="alert-tab-btn active" id="alertTabPending" onclick="switchAlertTableFilter('待处理')">待处理</button>
-                         <button class="alert-tab-btn" id="alertTabProcessing" onclick="switchAlertTableFilter('跟进中')">处理/跟进中</button>
-                         <button class="alert-tab-btn" id="alertTabResolved" onclick="switchAlertTableFilter('已解除')">已处理</button>
-                     </div>
-                     <div class="alert-category-tabs">
-                         <button class="alert-cat-btn active" id="catTabAll" onclick="switchAlertCategoryFilter('全部')">全部分类</button>
-                         <button class="alert-cat-btn" id="catTabCardio" onclick="switchAlertCategoryFilter('脑血管')">🫀 脑血管</button>
-                         <button class="alert-cat-btn" id="catTabEmotion" onclick="switchAlertCategoryFilter('情绪压力')">🧠 情绪压力</button>
-                         <button class="alert-cat-btn" id="catTabSleep" onclick="switchAlertCategoryFilter('睡眠')">🌙 睡眠</button>
-                     </div>
-                     <div class="table-scroll-container" style="height: calc(100% - 90px);">
-                         <table class="drilldown-table">
-                             <thead>
-                                 <tr>
-                                     <th>预警时间</th>
-                                     <th>预警居民</th>
-                                     <th>异常体征</th>
-                                     <th>AI预警分类</th>
-                                     <th>责任医生</th>
-                                     <th>状态</th>
-                                 </tr>
-                             </thead>
-                             <tbody id="drilldownAlertTableBody">
-                                 <!-- 动态渲染 -->
-                             </tbody>
-                         </table>
-                     </div>
-                 </div>
-             </div>
-         </div>
-     </div>
+        </section>
+    </main>
 
-    <!-- 4. 商品与服务套餐销售分析下钻弹窗 -->
-    <div class="drilldown-overlay" id="drilldown-sales-modal" onclick="closeDrilldown()">
-        <div class="drilldown-container" onclick="event.stopPropagation()">
-            <div class="drilldown-close" onclick="closeDrilldown()">✕</div>
-            <div class="drilldown-header">
-                <h2>🛒 商品服务包销售分析及库存控制</h2>
-            </div>
-            <div class="drilldown-split-layout">
-                <!-- 左栏：指标统计 -->
-                <div class="drilldown-left-summary">
-                    <div class="summary-mini-card">
-                        <span class="mini-lbl">今日累计营业额</span>
-                        <span class="mini-val text-neon-green" style="font-family:'Outfit'; font-size:16px;" id="totalRevenueText">¥ 12,500.00</span>
-                    </div>
-                    <div class="summary-mini-card">
-                        <span class="mini-lbl">本月最畅销调理包</span>
-                        <span class="mini-val text-neon-cyan" style="font-size:11px;" id="bestSellerPackName">中医体质调理包</span>
-                    </div>
-                    <div class="summary-mini-card">
-                        <span class="mini-lbl">库存告急硬件数</span>
-                        <span class="mini-val text-neon-red" id="lowStockWarningCount">0 件</span>
-                    </div>
-                </div>
-                <!-- 右栏：列表与销售 -->
-                <div class="drilldown-right-table">
-                    <div class="alert-status-tabs">
-                        <button class="alert-tab-btn active" id="salesTabPack" onclick="switchSalesTab('pack')">服务套餐收费包</button>
-                        <button class="alert-tab-btn" id="salesTabItem" onclick="switchSalesTab('item')">调理商品与智能设备</button>
-                    </div>
-                    <div class="table-scroll-container" style="height: calc(100% - 60px);">
-                        <table class="drilldown-table">
-                            <thead id="salesTableHead">
-                                <!-- 动态更换表头 -->
-                            </thead>
-                            <tbody id="drilldownSalesTableBody">
-                                <!-- 动态渲染 -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 5. 多模态设备连接与心跳同步下钻弹窗 -->
-    <div class="drilldown-overlay" id="drilldown-devices-modal" onclick="closeDrilldown()">
-        <div class="drilldown-container" onclick="event.stopPropagation()">
-            <div class="drilldown-close" onclick="closeDrilldown()">✕</div>
-            <div class="drilldown-header">
-                <h2>⌚ 智能手表多模态设备连接健康分析</h2>
-            </div>
-            <div class="drilldown-split-layout">
-                <!-- 左栏：指标统计 -->
-                <div class="drilldown-left-summary">
-                    <div class="summary-mini-card">
-                        <span class="mini-lbl">当前设备在线率</span>
-                        <span class="mini-val text-neon-cyan" style="font-family:'Outfit';" id="deviceOnlinePercent">0%</span>
-                    </div>
-                    <div class="summary-mini-card">
-                        <span class="mini-lbl">离线断连设备</span>
-                        <span class="mini-val text-neon-yellow" id="offlineDeviceSum">0 台</span>
-                    </div>
-                    <div class="summary-mini-card">
-                        <span class="mini-lbl">低电量警报(&lt;20%)</span>
-                        <span class="mini-val text-neon-red" id="lowBatteryDeviceSum">0 台</span>
-                    </div>
-                </div>
-                <!-- 右栏：设备列表 -->
-                <div class="drilldown-right-table">
-                    <div class="table-filter-bar">
-                        <select class="cyber-select" id="filterDeviceStatus" onchange="renderDeviceDrilldownList()">
-                            <option value="">全部设备状态</option>
-                            <option value="在线">在线正常</option>
-                            <option value="离线">离线断连</option>
-                            <option value="低电量">电量低于20%</option>
-                        </select>
-                    </div>
-                    <div class="table-scroll-container" style="height: calc(100% - 50px);">
-                        <table class="drilldown-table">
-                            <thead>
-                                <tr>
-                                    <th>智能手表 IMEI</th>
-                                    <th>持有居民姓名</th>
-                                    <th>在线状态</th>
-                                    <th>信号强度 (dBm)</th>
-                                    <th>当前电量</th>
-                                    <th>最后心跳回传</th>
-                                </tr>
-                            </thead>
-                            <tbody id="drilldownDeviceTableBody">
-                                <!-- 动态渲染 -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ==================== 6. 生理数字人个人详情看板弹窗 (浅色科技版，支持二级下钻) ==================== -->
-    <div class="modal-overlay" id="record-detail-modal" onclick="closeRecordDetailModal()">
-        <div class="record-detail-container" onclick="event.stopPropagation()">
-            
-            <div class="modal-close-btn" onclick="closeRecordDetailModal()">✕</div>
-            
-            <div class="record-detail-title">
-                <h2>居民健康画像数字孪生看板 <span class="sync-status" id="headerTimeDetail">手表指标 5s 动态刷新</span></h2>
-            </div>
-
-            <div class="record-detail-layout">
-                <!-- 左列：基础信息 + 5大体征数据 + 趋势图 -->
-                <div class="record-side-col">
-                    
-                    <!-- 模块 B: 用户核心信息 -->
-                    <div class="info-block">
-                        <div class="info-block-title">👤 用户核心资料</div>
-                        <div class="profile-grid">
-                            <div class="profile-item">
-                                <span class="profile-label">用户名</span>
-                                <span class="profile-val" id="pat-name">用****6</span>
-                            </div>
-                            <div class="profile-item">
-                                <span class="profile-label">手机号</span>
-                                <span class="profile-val" id="pat-phone">139****9056</span>
-                            </div>
-                            <div class="profile-item">
-                                <span class="profile-label">性别年龄</span>
-                                <span class="profile-val" id="pat-age">男 / 32岁</span>
-                            </div>
-                            <div class="profile-item">
-                                <span class="profile-label">身高体重</span>
-                                <span class="profile-val" id="pat-body">170cm / 69kg</span>
-                            </div>
-                            <div class="profile-item">
-                                <span class="profile-label">BMI</span>
-                                <span class="profile-val text-neon-green" id="pat-bmi">23.88 <span class="bmi-badge">正常</span></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 模块 D: 实时生理体征数据 -->
-                    <div class="info-block" style="margin-top: 15px;">
-                        <div class="info-block-title">⌚ 实时生理体征 (手表实时监测)</div>
-                        <div class="flex-col gap-10">
-                            <!-- D-1 心率 -->
-                            <div class="vital-card border-heart">
-                                <div class="vital-icon-box bg-heart">❤️</div>
-                                <div class="vital-content">
-                                    <div class="vital-row">
-                                        <span class="vital-label">实时心率</span>
-                                        <span class="vital-status text-neon-green" id="det-hr-status">正常</span>
-                                    </div>
-                                    <div class="vital-row-data">
-                                        <span class="vital-number text-neon-cyan" id="det-hr">80</span>
-                                        <span class="vital-unit">次/分</span>
-                                    </div>
-                                    <div class="vital-time" id="det-hr-time">更新时间: 刚刚</div>
-                                </div>
-                            </div>
-
-                            <!-- D-2 睡眠 -->
-                            <div class="vital-card border-sleep">
-                                <div class="vital-icon-box bg-sleep">🛌</div>
-                                <div class="vital-content">
-                                    <div class="vital-row">
-                                        <span class="vital-label">睡眠时长</span>
-                                        <span class="vital-status text-neon-green" id="det-sleep-status">正常</span>
-                                    </div>
-                                    <div class="vital-row-data">
-                                        <span class="vital-number text-neon-cyan" id="det-sleep">7.5</span>
-                                        <span class="vital-unit">小时</span>
-                                    </div>
-                                    <div class="vital-time" id="det-sleep-time">更新时间: 刚刚</div>
-                                </div>
-                            </div>
-
-                            <!-- D-3 血压 -->
-                            <div class="vital-card border-bp">
-                                <div class="vital-icon-box bg-bp">🩺</div>
-                                <div class="vital-content">
-                                    <div class="vital-row">
-                                        <span class="vital-label">血压状况</span>
-                                        <span class="vital-status text-neon-green" id="det-bp-status">正常</span>
-                                    </div>
-                                    <div class="vital-row-data">
-                                        <span class="vital-number text-neon-cyan" id="det-bp">120/80</span>
-                                        <span class="vital-unit">mmHg</span>
-                                    </div>
-                                    <div class="vital-time" id="det-bp-time">更新时间: 刚刚</div>
-                                </div>
-                            </div>
-
-                            <!-- D-4 血氧 -->
-                            <div class="vital-card border-o2">
-                                <div class="vital-icon-box bg-o2">🩸</div>
-                                <div class="vital-content">
-                                    <div class="vital-row">
-                                        <span class="vital-label">血氧饱和度</span>
-                                        <span class="vital-status text-neon-green" id="det-spo2-status">正常</span>
-                                    </div>
-                                    <div class="vital-row-data">
-                                        <span class="vital-number text-neon-cyan" id="det-spo2">99</span>
-                                        <span class="vital-unit">%</span>
-                                    </div>
-                                    <div class="vital-time" id="det-spo2-time">更新时间: 刚刚</div>
-                                </div>
-                            </div>
-
-                            <!-- D-5 步数 -->
-                            <div class="vital-card border-step">
-                                <div class="vital-icon-box bg-step">🏃</div>
-                                <div class="vital-content">
-                                    <div class="vital-row">
-                                        <span class="vital-label">今日步数</span>
-                                        <span class="vital-status text-neon-green" id="det-step-status">达标</span>
-                                    </div>
-                                    <div class="vital-row-data">
-                                        <span class="vital-number text-neon-cyan" id="det-step">8000</span>
-                                        <span class="vital-unit">步</span>
-                                    </div>
-                                    <div class="vital-time" id="det-step-time">更新时间: 刚刚</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 模块 E: 用户历史趋势折线图 -->
-                    <div class="info-block" style="margin-top: 15px; height: 230px; display: flex; flex-direction: column;">
-                        <div class="info-block-title">📈 生理指标30天趋势历史</div>
-                        <div class="trends-tab-group">
-                            <button class="trend-tab active" data-type="heart" onclick="switchDetailTrend('heart')">心率</button>
-                            <button class="trend-tab" data-type="sleep" onclick="switchDetailTrend('sleep')">睡眠</button>
-                            <button class="trend-tab" data-type="bp" onclick="switchDetailTrend('bp')">血压</button>
-                            <button class="trend-tab" data-type="o2" onclick="switchDetailTrend('o2')">血氧</button>
-                            <button class="trend-tab" data-type="step" onclick="switchDetailTrend('step')">步数</button>
-                        </div>
-                        <div class="trend-chart-draw-area" style="flex-grow: 1; margin-top: 10px;">
-                            <svg id="detailTrendSVG" width="100%" height="100%" viewBox="0 0 280 130" preserveAspectRatio="none">
-                                <!-- JS 动态重绘折线与渐变 -->
-                            </svg>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- 中列：3D生理数字人展示区 -->
-                <div class="record-center-col">
-                    
-                    <!-- 模块 C: 3D数字人及发光底座 -->
-                    <div class="twin-model-container">
-                        
-                        <!-- 悬浮标签系统 -->
-                        <div class="floating-tag-item tag-l" id="detTagHeart" style="top: 100px; left: 10px;">
-                            <span class="tag-status-icon bg-green">🟢</span>
-                            <span class="tag-txt">心率: 80bpm</span>
-                        </div>
-                        
-                        <div class="floating-tag-item tag-r" id="detTagSleep" style="top: 140px; right: 10px;">
-                            <span class="tag-status-icon bg-green">🟢</span>
-                            <span class="tag-txt">睡眠: 7.5h</span>
-                        </div>
-
-                        <div class="floating-tag-item tag-l" id="detTagBp" style="top: 180px; left: 5px;">
-                            <span class="tag-status-icon bg-green">🟢</span>
-                            <span class="tag-txt">血压: 120/80</span>
-                        </div>
-
-                        <div class="floating-tag-item tag-r" id="detTagO2" style="top: 220px; right: 5px;">
-                            <span class="tag-status-icon bg-green">🟢</span>
-                            <span class="tag-txt">血氧: 99%</span>
-                        </div>
-
-                        <div class="floating-tag-item tag-l" id="detTagStep" style="bottom: 80px; left: 15px;">
-                            <span class="tag-status-icon bg-green">🟢</span>
-                            <span class="tag-txt">步数: 8000步</span>
-                        </div>
-
-                        <!-- 虚线引线 SVG 图层 -->
-                        <svg class="pointer-line-layer" id="pointerLineLayer" width="100%" height="100%">
-                            <!-- 动态划线 -->
-                        </svg>
-
-                        <!-- 半透明蓝色 3D 数字人 -->
-                        <div class="human-mesh-box">
-                            <svg viewBox="0 0 100 240" class="human-mesh-svg">
-                                <!-- 身体轮廓骨骼线 -->
-                                <path class="body-skeleton" d="M50 20 L50 220 M30 60 L70 60 M30 60 L35 120 L28 180 M70 60 L65 120 L72 180 M40 130 L38 180 L42 230 M60 130 L62 180 L58 230 M40 130 L60 130" stroke="#0284c7" stroke-width="1.2" fill="none" opacity="0.6"/>
-                                <circle cx="50" cy="30" r="14" stroke="#0284c7" stroke-width="1.5" fill="none" opacity="0.5"/>
-                                <!-- 脑部微变发光 -->
-                                <circle cx="50" cy="30" r="4" fill="#0284c7" opacity="0.8" class="skeleton-glow" id="detBrainGlow"></circle>
-                                <!-- 心脏跳动发光 -->
-                                <circle cx="48" cy="72" r="5" fill="#ef4444" id="detHeartGlow" class="heart-pulse-node"></circle>
-                                <!-- 肺部发光 -->
-                                <ellipse cx="50" cy="85" rx="7" ry="9" stroke="#0284c7" stroke-width="0.8" fill="none" opacity="0.4"/>
-                                <!-- 胃部发光 -->
-                                <path d="M46 102 Q50 96 54 105 Q58 114 48 116 Z" stroke="#0284c7" stroke-width="0.8" fill="none" opacity="0.4"/>
-                                <!-- 肾脏发光 -->
-                                <circle cx="42" cy="120" r="2.5" fill="#0284c7" opacity="0.4"></circle>
-                                <circle cx="58" cy="120" r="2.5" fill="#0284c7" opacity="0.4"></circle>
-                            </svg>
-                        </div>
-
-                        <!-- 双层自旋转底座 -->
-                        <div class="digital-pedestal">
-                            <div class="pedestal-ring ring-cw"></div>
-                            <div class="pedestal-ring ring-ccw"></div>
-                        </div>
-
-                        <!-- 24小时评估总体状态 -->
-                        <div class="pedestal-health-score">
-                            <div class="score-lbl">24小时健康评估</div>
-                            <div class="score-status text-neon-green" id="det-general-status">正常</div>
-                            <div class="score-stars" id="det-general-stars">★★★★☆</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 右列：疾病预测 + 睡眠与运动直方图 + 八维中医雷达图 -->
-                <div class="record-side-col">
-                    
-                    <!-- 模块 F: 未来一个月疾病风险评估 -->
-                    <div class="info-block">
-                        <div class="info-block-title">🔮 未来一个月疾病风险预测</div>
-                        <div class="risk-bar-list">
-                            <div class="bar-item">
-                                <div class="bar-meta"><span>脑血管风险</span><span id="det-risk-stroke">5.2%</span></div>
-                                <div class="bar-track"><div class="bar-fill bg-green" id="det-fill-stroke" style="width: 5.2%;"></div></div>
-                            </div>
-                            <div class="bar-item">
-                                <div class="bar-meta"><span>心力衰竭</span><span id="det-risk-heartfail">1.2%</span></div>
-                                <div class="bar-track"><div class="bar-fill bg-green" id="det-fill-heartfail" style="width: 1.2%;"></div></div>
-                            </div>
-                            <div class="bar-item">
-                                <div class="bar-meta"><span>冠心病</span><span id="det-risk-chd">0.8%</span></div>
-                                <div class="bar-track"><div class="bar-fill bg-green" id="det-fill-chd" style="width: 0.8%;"></div></div>
-                            </div>
-                            <div class="bar-item">
-                                <div class="bar-meta"><span>房颤风险</span><span id="det-risk-af">0.6%</span></div>
-                                <div class="bar-track"><div class="bar-fill bg-green" id="det-fill-af" style="width: 0.6%;"></div></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 模块 G: 睡眠分析直方图 -->
-                    <div class="info-block" style="margin-top: 15px;">
-                        <div class="info-block-title">🛌 睡眠周期分布监测</div>
-                        <div class="sleep-stacked-container">
-                            <div class="sleep-timeline-hours">
-                                <span class="sleep-time-lbl">入睡 22:30</span>
-                                <span class="sleep-time-lbl" style="text-align: right;">起 06:30</span>
-                            </div>
-                            <!-- 三色睡眠堆叠柱状图 -->
-                            <div class="sleep-bar-gauge">
-                                <div class="sleep-gauge-segment segment-deep" id="det-sleep-deep-pct" style="width: 35%;" title="深睡"></div>
-                                <div class="sleep-gauge-segment segment-light" id="det-sleep-light-pct" style="width: 50%;" title="浅睡"></div>
-                                <div class="sleep-gauge-segment segment-awake" id="det-sleep-awake-pct" style="width: 15%;" title="清醒"></div>
-                            </div>
-                            <!-- 数据比率明细 -->
-                            <div class="sleep-stats-detail" style="margin-top: 8px; display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; font-size: 10px;">
-                                <div><span style="color: #0369a1; display: block; font-weight: 600;">深睡</span><span id="det-sleep-deep-val">2.6h</span></div>
-                                <div><span style="color: #0284c7; display: block; font-weight: 600;">浅睡</span><span id="det-sleep-light-val">3.8h</span></div>
-                                <div><span style="color: #eab308; display: block; font-weight: 600;">清醒</span><span id="det-sleep-awake-val">1.1h</span></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 模块 H: 24h 运动强度直方图 -->
-                    <div class="info-block" style="margin-top: 15px;">
-                        <div class="info-block-title">🏃 24小时运动分布 (每小时强度)</div>
-                        <div class="motion-histogram-box">
-                            <div class="motion-bars-row" id="detMotionBarsRow">
-                                <!-- JS 动态画 24 根柱子 -->
-                            </div>
-                            <div class="motion-hours-labels">
-                                <span>00:00</span>
-                                <span>12:00</span>
-                                <span>24:00</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 模块 I: 中医八维脏腑状况雷达图 -->
-                    <div class="info-block" style="margin-top: 15px; flex-grow: 1; display: flex; flex-direction: column;">
-                        <div class="info-block-title">☯️ 中医气血八维脏腑状况</div>
-                        <div class="tcm-radar-section" style="flex-grow: 1; display: grid; grid-template-columns: 140px 1fr; gap: 10px; align-items: center;">
-                            <!-- 雷达 SVG 绘图区 -->
-                            <div class="radar-svg-box">
-                                <svg width="140" height="140" id="tcmRadarSVG" style="display: block; overflow: visible;">
-                                    <!-- 动态渲染多边形网格及顶点 -->
-                                </svg>
-                            </div>
-                            <!-- 辨证病机与症状 -->
-                            <div class="radar-diagnosis-box">
-                                <div class="diag-title" id="detTcmDiagTitle">气血和平 🟢</div>
-                                <div class="diag-row-sub">
-                                    <span class="diag-lbl">出警病机</span>
-                                    <span class="diag-txt-val" id="detTcmDiagPulse">脉象平缓，脏腑气血运行周流。</span>
-                                </div>
-                                <div class="diag-row-sub" style="margin-top: 5px;">
-                                    <span class="diag-lbl">常见症状</span>
-                                    <span class="diag-txt-val" id="detTcmDiagSymptoms">神清气爽，饮食正常，无腹胀、失眠多梦。</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- 7. 预警解除原因登记小确认框 -->
-    <div class="mini-confirm-overlay" id="alert-resolve-confirm" onclick="closeResolveAlertModal()">
-        <div class="mini-confirm-card" onclick="event.stopPropagation()">
-            <div class="mini-confirm-header">登记警报解除原因</div>
-            <div class="mini-confirm-body" style="padding: 15px 0;">
-                <label style="font-size: 11px; color: var(--text-secondary); display: block; margin-bottom: 5px;">解除处置说明（必填）：</label>
-                <textarea class="cyber-textarea" id="alertResolveComment" placeholder="请输入医生已介入反馈、设备误报原因、或患者已遵医嘱调理等说明..." style="width: 100%; height: 80px; box-sizing: border-box;"></textarea>
-                <div style="font-size: 9px; color: var(--text-muted); margin-top: 4px;">该处置说明将永久归档计入医患预警响应明细中。</div>
-            </div>
-            <div class="mini-confirm-actions">
-                <button class="btn btn-secondary" onclick="closeResolveAlertModal()">取消</button>
-                <button class="btn btn-primary" onclick="confirmResolveAlertAction()">确认解除</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 页面交互控制 JS -->
-    <script src="app.js" charset="utf-8"></script>
+    <footer>
+        <p>© 2026 AI主动健康管理一体化平台 (中西医结合演示系统) | Google DeepMind AI coding pair program</p>
+    </footer>
 
 </body>
 </html>

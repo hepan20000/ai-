@@ -66,7 +66,6 @@ let doctorsApproval = [
     }
 ];
 
-let products = [
 const SVG_ICONS = {
     tea: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' width='100' height='100'><rect width='100' height='100' rx='12' fill='%23f0fdf4'/><path d='M30 40 h35 v25 a15 15 0 0 1 -15 15 h-5 a15 15 0 0 1 -15 -15 z' fill='none' stroke='%2316a34a' stroke-width='4'/><path d='M65 45 h8 a6 6 0 0 1 6 6 v4 a6 6 0 0 1 -6 6 h-8' fill='none' stroke='%2316a34a' stroke-width='4'/><path d='M38 25 q3 -5 0 -10 M48 25 q3 -5 0 -10 M58 25 q3 -5 0 -10' fill='none' stroke='%2316a34a' stroke-width='3' stroke-linecap='round'/></svg>",
     meal: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' width='100' height='100'><rect width='100' height='100' rx='12' fill='%23fff7ed'/><path d='M20 50 a30 30 0 0 0 60 0 z' fill='none' stroke='%23ea580c' stroke-width='4'/><line x1='15' y1='50' x2='85' y2='50' stroke='%23ea580c' stroke-width='4' stroke-linecap='round'/><path d='M35 35 q5 -10 10 -5 t10 -5 t10 -5' fill='none' stroke='%23ea580c' stroke-width='3' stroke-linecap='round'/></svg>",
