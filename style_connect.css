@@ -1,0 +1,1378 @@
+/* ==========================================================================
+   医生好友申请与联动会话原型 - 样式系统 (style_connect.css)
+   设计风格：双机同屏浅色企业科技 (Dual Sim Screen Enterprise Light Tech)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+:root {
+    --bg-main: #f8fafc; /* 浅灰白 */
+    --bg-phone: #f1f5f9; /* 柔和浅灰色手机壳 */
+    --bg-panel: #ffffff; /* 纯白屏幕面板 */
+    --border-color: #e2e8f0; /* 细灰色线 */
+    --primary: #10b981; /* 翡翠绿 */
+    --accent: #0284c7; /* 科技蓝 */
+    --danger: #ef4444; /* 珊瑚红 */
+    --warning: #f59e0b; /* 警告黄 */
+    --text-primary: #0f172a; /* 深炭灰 */
+    --text-secondary: #475569; /* 中灰 */
+    --text-muted: #94a3b8; /* 浅灰 */
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: 'Outfit', 'Noto Sans SC', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 顶部返回大屏的全局导航 */
+.global-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border-color);
+    z-index: 100;
+}
+
+.back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 13px;
+    transition: var(--transition);
+}
+
+.back-btn:hover {
+    color: var(--accent);
+}
+
+.back-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+.nav-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* 核心布局：双机同屏展示区 */
+.workspace-container {
+    flex-grow: 1;
+    display: grid;
+    grid-template-columns: 1fr 150px 1fr;
+    align-items: center;
+    justify-items: center;
+    padding: 30px 50px;
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    gap: 20px;
+}
+
+@media (max-width: 1100px) {
+    .workspace-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        padding: 20px;
+    }
+    .flow-connector {
+        transform: rotate(90deg);
+        height: 60px !important;
+    }
+}
+
+/* iPhone 模拟器外壳 (Mockup) - 采用高级黑实体壳包裹浅色屏幕 */
+.phone-mockup {
+    width: 360px;
+    height: 720px;
+    border-radius: 40px;
+    background: #0f172a;
+    border: 8px solid #0f172a;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 手机壳流光边框特效 */
+.phone-mockup.client-side {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 0 15px rgba(16, 185, 129, 0.15);
+}
+.phone-mockup.doctor-side {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 0 15px rgba(2, 132, 199, 0.15);
+}
+
+/* 顶部刘海 (Dynamic Island) */
+.phone-notch {
+    width: 110px;
+    height: 25px;
+    background: #000;
+    border-radius: 0 0 15px 15px;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+}
+
+/* 手机状态栏 */
+.phone-status-bar {
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 24px 0;
+    font-size: 11px;
+    color: var(--text-secondary);
+    z-index: 90;
+    background: transparent;
+    pointer-events: none;
+}
+
+.status-left {
+    font-weight: 600;
+    font-family: 'Outfit', sans-serif;
+}
+
+.status-right {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.status-icon {
+    width: 12px;
+    height: 12px;
+    fill: currentColor;
+}
+
+/* 手机内屏主容器 */
+.phone-screen {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+    background: var(--bg-panel);
+}
+
+/* 手机模拟器的各个页面 (View) */
+.view-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 18px 18px;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.view-panel.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.view-panel.slide-out-left {
+    transform: translateX(-100%);
+    opacity: 0;
+}
+
+.view-panel.slide-in-right {
+    transform: translateX(100%);
+}
+
+/* 手机内的导航栏 */
+.phone-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 10px 0;
+}
+
+.phone-header h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* 搜医生搜索框 */
+.search-bar-container {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.search-input {
+    width: 100%;
+    background: #f1f5f9;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 10px 12px 10px 36px;
+    color: var(--text-primary);
+    font-size: 12px;
+    outline: none;
+    transition: var(--transition);
+}
+
+.search-input:focus {
+    border-color: var(--accent);
+    background: #ffffff;
+}
+
+.search-icon {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    width: 14px;
+    height: 14px;
+    fill: var(--text-secondary);
+}
+
+/* 医生卡片列表 */
+.doctor-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+    flex-grow: 1;
+    padding-bottom: 10px;
+}
+
+.doctor-list::-webkit-scrollbar {
+    width: 3px;
+}
+
+.doctor-list::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+}
+
+.doctor-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: var(--transition);
+}
+
+.doctor-card:hover {
+    border-color: rgba(2, 132, 199, 0.2);
+    background: #f8fafc;
+}
+
+.doctor-card-top {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.doc-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    background: #f1f5f9;
+}
+
+.doc-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.doc-info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.doc-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.doc-title {
+    font-size: 10px;
+    color: var(--text-secondary);
+}
+
+.doc-tags {
+    font-size: 10px;
+    color: var(--accent);
+    margin-top: 2px;
+}
+
+.doctor-card-desc {
+    font-size: 11px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.connect-action-btn {
+    width: 100%;
+    padding: 8px;
+    border-radius: 10px;
+    border: none;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.connect-action-btn.add-friend {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(2, 132, 199, 0.2);
+}
+
+.connect-action-btn.add-friend:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+}
+
+.connect-action-btn.pending {
+    background: #f1f5f9;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    cursor: not-allowed;
+}
+
+.connect-action-btn.start-chat {
+    background: var(--primary);
+    color: #ffffff;
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.2);
+}
+
+.connect-action-btn.start-chat:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* 添加好友毛玻璃弹窗 (Request Drawer) */
+.drawer-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.3);
+    backdrop-filter: blur(4px);
+    z-index: 120;
+    opacity: 0;
+    pointer-events: none;
+    transition: var(--transition);
+}
+
+.drawer-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.drawer-content {
+    position: absolute;
+    bottom: -100%;
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+    border-top: 1px solid var(--border-color);
+    border-radius: 20px 20px 0 0;
+    padding: 24px 20px;
+    z-index: 130;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+}
+
+.drawer-overlay.active .drawer-content {
+    bottom: 0;
+}
+
+.drawer-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.request-textarea {
+    width: 100%;
+    height: 80px;
+    background: #f1f5f9;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 10px;
+    color: var(--text-primary);
+    font-size: 11px;
+    resize: none;
+    outline: none;
+    font-family: inherit;
+}
+
+.request-textarea:focus {
+    border-color: var(--accent);
+    background: #ffffff;
+}
+
+.drawer-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.drawer-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: var(--transition);
+}
+
+.drawer-btn.cancel {
+    background: #f1f5f9;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.drawer-btn.send {
+    background: var(--accent);
+    color: #fff;
+}
+
+/* ==========================================================================
+   B端：医生/健管师 接收端样式
+   ========================================================================== */
+.notification-bar {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.04) 0%, transparent 100%);
+    border: 1px solid rgba(239, 68, 68, 0.12);
+    border-radius: 14px;
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.notification-bar:hover {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, transparent 100%);
+    border-color: #ef4444;
+}
+
+.notification-bar.pulse::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    box-shadow: inset 0 0 10px rgba(239, 68, 68, 0.1);
+    animation: alertPulse 2s infinite alternate;
+}
+
+.noti-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-primary);
+}
+
+.noti-red-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ef4444;
+    box-shadow: 0 0 8px #ef4444;
+}
+
+.noti-badge {
+    font-size: 10px;
+    background: #ef4444;
+    color: #fff;
+    padding: 1px 6px;
+    border-radius: 10px;
+    font-family: 'Outfit';
+    font-weight: 600;
+}
+
+/* 好友申请消息详情卡片 */
+.request-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.request-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.03);
+}
+
+.req-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.req-user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-avatar-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: var(--accent);
+    border: 1px solid rgba(2, 132, 199, 0.15);
+}
+
+.user-meta {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.user-tag {
+    font-size: 9px;
+    color: var(--primary);
+    background: rgba(16,185,129,0.08);
+    padding: 1px 4px;
+    border-radius: 4px;
+    align-self: flex-start;
+    margin-top: 1px;
+}
+
+.req-date {
+    font-size: 10px;
+    color: var(--text-muted);
+}
+
+.req-note-box {
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.req-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.req-btn {
+    flex: 1;
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: var(--transition);
+}
+
+.req-btn.reject {
+    background: rgba(239, 68, 68, 0.08);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.15);
+}
+
+.req-btn.reject:hover {
+    background: rgba(239, 68, 68, 0.15);
+}
+
+.req-btn.accept {
+    background: var(--primary);
+    color: #fff;
+}
+
+.req-btn.accept:hover {
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+/* ==========================================================================
+   双端通用聊天页面 (Chat Room View)
+   ========================================================================== */
+.chat-room-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+    background: #ffffff;
+}
+
+.chat-back-btn {
+    cursor: pointer;
+    color: var(--text-secondary);
+}
+
+.chat-back-btn svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+.chat-title-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-room-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.chat-room-status {
+    font-size: 9px;
+    color: var(--primary);
+}
+
+.chat-messages-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 15px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: #f8fafc;
+    margin: 0 -18px;
+    padding: 15px 18px;
+}
+
+.chat-messages-container::-webkit-scrollbar {
+    width: 3px;
+}
+
+.chat-messages-container::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+}
+
+.chat-sys-msg {
+    align-self: center;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 9px;
+    color: var(--text-secondary);
+}
+
+.bubble {
+    max-width: 80%;
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    line-height: 1.4;
+    word-break: break-all;
+}
+
+.bubble.self {
+    align-self: flex-end;
+    background: var(--accent);
+    color: #ffffff;
+    border-top-right-radius: 2px;
+    box-shadow: 0 2px 6px rgba(2, 132, 199, 0.15);
+}
+
+.bubble.other {
+    align-self: flex-start;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-top-left-radius: 2px;
+}
+
+.chat-footer {
+    display: flex;
+    gap: 8px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+    background: #ffffff;
+}
+
+.chat-text-input {
+    flex-grow: 1;
+    background: #f1f5f9;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 8px 12px;
+    color: var(--text-primary);
+    font-size: 11px;
+    outline: none;
+    transition: var(--transition);
+}
+
+.chat-text-input:focus {
+    border-color: var(--accent);
+    background: #ffffff;
+}
+
+.chat-btn-send {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    border: none;
+    background: var(--accent);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.chat-btn-send:hover {
+    transform: scale(1.05);
+}
+
+.chat-btn-send svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+}
+
+/* ==========================================================================
+   中间的流光连线 (Flow Connector)
+   ========================================================================== */
+.flow-connector {
+    width: 100%;
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    position: relative;
+}
+
+.connector-line-box {
+    width: 100%;
+    height: 4px;
+    background: #e2e8f0;
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+}
+
+.connector-dot {
+    position: absolute;
+    top: 0;
+    left: -20px;
+    width: 20px;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, var(--accent));
+    box-shadow: 0 0 10px var(--accent);
+    animation: flowRight 2s linear infinite;
+    animation-play-state: paused;
+}
+
+.connector-dot.flowing-right {
+    animation-play-state: running;
+}
+
+.connector-dot.flowing-left {
+    background: linear-gradient(-90deg, transparent, var(--primary));
+    box-shadow: 0 0 10px var(--primary);
+    animation: flowLeft 2s linear infinite;
+    animation-play-state: running;
+}
+
+.step-flow-indicator {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 10px;
+    color: var(--text-secondary);
+    text-align: center;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+/* 关系成立的全局光效 */
+.glow-success-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 500;
+    opacity: 0;
+    transition: opacity 1.5s ease;
+}
+
+.glow-success-overlay.active {
+    opacity: 1;
+}
+
+/* ==========================================================================
+   动效与关键帧
+   ========================================================================== */
+@keyframes alertPulse {
+    0% { box-shadow: inset 0 0 5px rgba(239, 68, 68, 0.05); }
+    100% { box-shadow: inset 0 0 15px rgba(239, 68, 68, 0.2); }
+}
+
+@keyframes flowRight {
+    0% { left: -10%; }
+    100% { left: 110%; }
+}
+
+@keyframes flowLeft {
+    0% { right: -10%; }
+    100% { right: 110%; }
+}
+
+/* ==========================================================================
+   医生端新增功能样式 (工作台个人卡片、抽屉表单、双栏指标面板)
+   ========================================================================== */
+
+/* 手机模拟器拉宽效果 */
+.phone-mockup.doctor-side {
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
+}
+
+.phone-mockup.doctor-side.expanded {
+    width: 720px; /* 拉宽为双栏尺寸 */
+}
+
+/* 医生工作台：个人信息配置卡片 */
+.doc-profile-card {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 15px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.doc-profile-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.doc-profile-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(2, 132, 199, 0.2);
+}
+
+.doc-profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.doc-profile-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.doc-profile-title {
+    font-size: 10px;
+    color: var(--text-secondary);
+}
+
+.doc-profile-desc-tags {
+    font-size: 10px;
+    color: var(--accent);
+    margin-top: 1px;
+}
+
+.doc-profile-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 10px;
+}
+
+.profile-action-btn {
+    background: #f1f5f9;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 6px 10px;
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.profile-action-btn:hover {
+    background: rgba(2, 132, 199, 0.05);
+    color: var(--accent);
+    border-color: rgba(2, 132, 199, 0.3);
+}
+
+.profile-action-btn svg {
+    width: 12px;
+    height: 12px;
+    fill: currentColor;
+}
+
+/* 抽屉表单样式 */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 12px;
+}
+
+.form-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 8px 12px;
+    color: var(--text-primary);
+    font-size: 12px;
+    outline: none;
+    transition: var(--transition);
+}
+
+.form-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.1);
+}
+
+.char-count {
+    font-size: 10px;
+    color: var(--text-muted);
+    align-self: flex-end;
+}
+
+/* 账号安全折叠面板与换绑样式 */
+.account-setting-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 15px;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 8px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: var(--transition);
+    border-bottom: 2px solid transparent;
+}
+
+.tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+    font-weight: 600;
+}
+
+.phone-status-display {
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    padding: 8px 12px;
+    font-size: 11px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.phone-status-display strong {
+    color: var(--accent);
+}
+
+.sms-code-group {
+    display: flex;
+    gap: 8px;
+}
+
+.sms-input {
+    flex: 1;
+}
+
+.sms-send-btn {
+    background: rgba(2, 132, 199, 0.08);
+    color: var(--accent);
+    border: 1px solid rgba(2, 132, 199, 0.15);
+    border-radius: 10px;
+    padding: 0 15px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    white-space: nowrap;
+}
+
+.sms-send-btn:hover:not(:disabled) {
+    background: rgba(2, 132, 199, 0.15);
+}
+
+.sms-send-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ==========================================================================
+   医生端 IM 右侧挂载实时手表健康看板
+   ========================================================================== */
+
+/* 会话区域与面板的双栏布局 */
+.chat-main-layout {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.chat-conversation-area {
+    flex: 1; /* 撑满手机容器宽度 */
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-side-dashboard {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    padding: 10px 14px 14px;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+}
+
+.dashboard-header h3 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.sync-status {
+    font-size: 9px;
+    color: var(--primary);
+    background: rgba(16, 185, 129, 0.08);
+    padding: 1px 6px;
+    border-radius: 4px;
+}
+
+/* 3级健康状态指示条 */
+.health-status-bar {
+    border-radius: 10px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-dot.success { background: var(--primary); box-shadow: 0 0 8px var(--primary); }
+.status-dot.warning { background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+.status-dot.danger { background: #ef4444; box-shadow: 0 0 8px #ef4444; }
+
+.alert-status-success {
+    background: rgba(16, 185, 129, 0.06);
+    border: 1px solid rgba(16, 185, 129, 0.15);
+    color: var(--primary);
+}
+
+.alert-status-warning {
+    background: rgba(245, 158, 11, 0.06);
+    border: 1px solid rgba(245, 158, 11, 0.15);
+    color: #f59e0b;
+}
+
+.alert-status-danger {
+    background: rgba(239, 68, 68, 0.06);
+    border: 1px solid rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+}
+
+/* 看板滚动区域 */
+.dashboard-scroll-area {
+    flex-grow: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding-right: 2px;
+}
+
+.dashboard-scroll-area::-webkit-scrollbar {
+    width: 2px;
+}
+
+.dashboard-scroll-area::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+}
+
+.metric-section h4, .report-section h4 {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.metric-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.metric-card {
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.metric-label {
+    font-size: 9px;
+    color: var(--text-secondary);
+}
+
+.metric-value {
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Outfit';
+    margin: 2px 0;
+}
+
+.metric-value.normal { color: var(--text-primary); }
+.metric-value.warning { color: #f59e0b; }
+.metric-value.danger { color: #ef4444; }
+
+.metric-desc {
+    font-size: 8px;
+    color: var(--text-muted);
+}
+
+/* 看板多维评估报告卡片 */
+.report-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.report-card {
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.report-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.report-title {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.report-tag {
+    font-size: 8px;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-weight: 600;
+}
+
+.report-tag.normal { background: rgba(16, 185, 129, 0.1); color: var(--primary); }
+.report-tag.warning { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+.report-tag.danger { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+
+.report-brief {
+    font-size: 9px;
+    color: var(--text-secondary);
+    line-height: 1.3;
+}
+
+/* 常用话术快捷工具条 */
+.chat-quick-templates {
+    display: flex;
+    gap: 6px;
+    padding: 6px 12px;
+    overflow-x: auto;
+    background: #ffffff;
+    border-top: 1px solid var(--border-color);
+}
+
+.chat-quick-templates::-webkit-scrollbar {
+    display: none;
+}
+
+.template-chip {
+    font-size: 9px;
+    background: #f1f5f9;
+    border: 1px solid var(--border-color);
+    padding: 4px 8px;
+    border-radius: 12px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: var(--transition);
+}
+
+.template-chip:hover {
+    background: rgba(2, 132, 199, 0.05);
+    color: var(--accent);
+    border-color: rgba(2, 132, 199, 0.2);
+}
+
+/* 聊天警报高危系统消息 */
+.chat-sys-msg.alert {
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+    padding: 8px 12px;
+    border-radius: 10px;
+    align-self: center;
+    line-height: 1.4;
+    font-size: 10px;
+    animation: alertBorderFlash 1s infinite alternate;
+}
+
+/* 全局浮动微光通知气泡 */
+.global-float-notification {
+    position: fixed;
+    top: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(16, 185, 129, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.global-float-notification.active {
+    top: 30px;
+    opacity: 1;
+}
+
+/* 呼吸灯与闪烁动效 */
+.blink {
+    animation: textBlink 1.5s infinite alternate;
+}
+
+@keyframes textBlink {
+    0% { opacity: 0.3; }
+    100% { opacity: 1; }
+}
+
+@keyframes alertBorderFlash {
+    0% { border-color: rgba(239, 68, 68, 0.2); box-shadow: 0 0 5px rgba(239, 68, 68, 0.1); }
+    100% { border-color: rgba(239, 68, 68, 0.6); box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
+}
+
+.connector-dot.warning-flash {
+    background: linear-gradient(90deg, transparent, #ef4444);
+    box-shadow: 0 0 15px #ef4444;
+    animation: flowRight 0.8s linear infinite;
+    animation-play-state: running;
+}

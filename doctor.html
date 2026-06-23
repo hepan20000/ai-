@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医生端工作台 - AI主动健康平台</title>
+    <meta name="description" content="医生执业形象、随访监控、干预方案AI制定、IM智能会话与账号安全中心。">
+    <link rel="stylesheet" href="doctor.css">
+</head>
+<body>
+
+    <!-- 全局页面容器 -->
+    <div class="doctor-layout">
+        
+        <!-- ==================== 左侧固定导航栏 ==================== -->
+        <aside class="sidebar">
+            <div class="brand">
+                <span class="brand-dot"></span>
+                <span class="brand-name">医生工作台</span>
+            </div>
+            
+            <!-- 医生个人简要名片 -->
+            <div class="sidebar-doc-card">
+                <div class="sidebar-avatar" id="side-doc-avatar">岳</div>
+                <div class="sidebar-doc-info">
+                    <strong id="side-doc-name">张景岳</strong>
+                    <span id="side-doc-title">主任医师</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <!-- 模块一：个人品牌管理 -->
+                <div class="menu-group">
+                    <div class="menu-group-title">个人品牌</div>
+                    <a href="#" class="nav-item active" data-panel="profile">
+                        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                        执业名片配置
+                    </a>
+                    <a href="#" class="nav-item" data-panel="articles">
+                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 15H7v-2h10v2zm0-4H7v-2h10v2zm0-4H7V8h10v2z"/></svg>
+                        科普内容管理
+                    </a>
+                </div>
+
+                <!-- 模块二：用户与随访 -->
+                <div class="menu-group">
+                    <div class="menu-group-title">诊疗与用户</div>
+                    <a href="#" class="nav-item" data-panel="patients">
+                        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V20h14v-3.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 2 1.97 3.45V20h6v-3.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                        我的用户
+                        <span class="alarm-badge blink" id="sidebar-alarm-badge" style="display:none;">1</span>
+                    </a>
+                    <a href="#" class="nav-item" data-panel="im">
+                        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+                        IM 智能会话
+                    </a>
+                </div>
+
+                <!-- 模块三：方案与服务 -->
+                <div class="menu-group">
+                    <div class="menu-group-title">干预方案</div>
+                    <a href="#" class="nav-item" data-panel="recipes">
+                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                        健康干预定制
+                    </a>
+                </div>
+
+                <!-- 模块四：账号设置 -->
+                <div class="menu-group">
+                    <div class="menu-group-title">设置中心</div>
+                    <a href="#" class="nav-item" data-panel="account">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                        个人账号安全
+                    </a>
+                </div>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="portal.html" class="exit-link">
+                    <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                    返回演示门户
+                </a>
+            </div>
+        </aside>
+
+        <!-- ==================== 右侧核心内容区 ==================== -->
+        <main class="main-content">
+            
+            <!-- 头部状态栏 -->
+            <header class="content-header">
+                <h2 id="current-panel-title">执业主页配置</h2>
+                <div class="user-profile">
+                    <span class="user-role" id="header-doc-hospital">本院治未病中心 / 中医心血管科</span>
+                </div>
+            </header>
+            
+            <!-- 各面板内容区 -->
+            <div class="panel-container">
+                
+                <!-- ==================== 面板 1：执业主页配置 ==================== -->
+                <div class="view-panel active" id="panel-profile">
+                    <div class="card-glass" style="max-width: 800px; margin: 0 auto;">
+                        <h3>执业形象名片配置</h3>
+                        <div class="profile-avatar-row" style="margin: 20px 0;">
+                            <div class="profile-avatar-large">岳</div>
+                            <div style="display:flex; flex-direction:column; gap:4px;">
+                                <span style="font-size:11px; color:var(--text-secondary);">头像及形象照</span>
+                                <button class="btn btn-secondary" style="padding:4px 10px; font-size:10px;">更新头像</button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group-row">
+                            <div class="form-group">
+                                <label class="form-label">姓名 (限5字)</label>
+                                <input type="text" class="form-input" id="profile-name" value="张景岳">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">职称</label>
+                                <input type="text" class="form-input" id="profile-title" value="主任医师" disabled>
+                            </div>
+                        </div>
+                        <div class="form-group-row">
+                            <div class="form-group">
+                                <label class="form-label">所属科室</label>
+                                <input type="text" class="form-input" id="profile-dept" value="中医心血管科" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">执业年限</label>
+                                <input type="number" class="form-input" id="profile-years" value="15">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-top: 15px;">
+                            <label class="form-label">擅长调理方向标签 (多选)</label>
+                            <div class="checkbox-group" style="max-height:100px;">
+                                <label class="checkbox-label"><input type="checkbox" class="profile-tag-check" value="失眠多梦"> 失眠多梦</label>
+                                <label class="checkbox-label"><input type="checkbox" class="profile-tag-check" value="经方调理"> 经方调理</label>
+                                <label class="checkbox-label"><input type="checkbox" class="profile-tag-check" value="体质调理"> 体质调理</label>
+                                <label class="checkbox-label"><input type="checkbox" class="profile-tag-check" value="亚健康调理"> 亚健康调理</label>
+                                <label class="checkbox-label"><input type="checkbox" class="profile-tag-check" value="慢病管理"> 慢病管理</label>
+                                <label class="checkbox-label"><input type="checkbox" class="profile-tag-check" value="脾胃调理"> 脾胃调理</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">擅长长文本诊疗特色介绍 (限500字)</label>
+                            <textarea class="form-input" id="profile-desc" style="height:110px; resize:none;" maxlength="500" oninput="updateCharCount()"></textarea>
+                            <span class="char-count" id="char-count-lbl">0 / 500</span>
+                        </div>
+                        <button class="btn btn-primary" onclick="saveDocProfileSettings()" style="width:100%; justify-content:center; margin-top:10px;">保存名片配置</button>
+                    </div>
+                </div>
+
+                <!-- ==================== 面板 1.5：科普内容管理 ==================== -->
+                <div class="view-panel" id="panel-articles">
+                    <div class="card-glass" style="max-width: 1000px; margin: 0 auto;">
+                        <!-- 过滤搜索栏 -->
+                        <div class="filter-row">
+                            <div class="filter-group">
+                                <label class="filter-label">科普标题</label>
+                                <input type="text" class="form-input" id="searchArticleTitle" placeholder="搜索标题..." style="width: 180px;" oninput="filterArticlesList()">
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">分类</label>
+                                <select class="form-input" id="filterArticleType" style="width: 100px;" onchange="filterArticlesList()">
+                                    <option value="all">全部类型</option>
+                                    <option value="图文">图文</option>
+                                    <option value="视频">视频</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">状态</label>
+                                <select class="form-input" id="filterArticleStatus" style="width: 100px;" onchange="filterArticlesList()">
+                                    <option value="all">全部状态</option>
+                                    <option value="published">已发布</option>
+                                    <option value="draft">草稿</option>
+                                    <option value="unpublished">已下架</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="panel-header-action" style="margin-top: 10px;">
+                            <h3>科普文章与科普短视频发布</h3>
+                            <div class="btn-group">
+                                <button class="btn btn-accent" style="padding:6px 12px;" onclick="openAddArticleModal()">+ 发布文章</button>
+                                <button class="btn btn-accent" style="padding:6px 12px;" onclick="openAddVideoModal()">+ 发布短视频</button>
+                            </div>
+                        </div>
+                        
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>科普标题</th>
+                                        <th>类型</th>
+                                        <th>文件大小/字数</th>
+                                        <th>生效状态</th>
+                                        <th>开启状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="cms-list">
+                                    <!-- JS 渲染 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== 面板 2：我的用户健康档案 ==================== -->
+                <div class="view-panel" id="panel-patients">
+                    <div class="card-glass shadow-sm">
+                        <!-- 搜索与筛选 -->
+                        <div class="filter-row" style="display:flex; gap:15px; margin-bottom:15px; flex-wrap: wrap;">
+                            <div class="filter-group">
+                                <label class="filter-label" style="font-size:12px; color:var(--text-secondary); margin-bottom:4px; display:block;">居民检索</label>
+                                <input type="text" class="form-input" id="searchRecordInput" style="width:200px; padding:6px 12px; font-size:12px; background:var(--bg-panel); color:var(--text-primary); border:1px solid var(--border-color); border-radius:6px; outline:none;" placeholder="姓名、手机号..." oninput="filterPatientsList()">
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label" style="font-size:12px; color:var(--text-secondary); margin-bottom:4px; display:block;">健康评级</label>
+                                <select class="form-input" id="filterPatientState" style="width:140px; padding:6px 12px; font-size:12px; background:var(--bg-panel); color:var(--text-primary); border:1px solid var(--border-color); border-radius:6px; outline:none; cursor:pointer;" onchange="filterPatientsList()">
+                                    <option value="all">全部健康判定</option>
+                                    <option value="normal">健康 (绿)</option>
+                                    <option value="warning">亚健康 (黄)</option>
+                                    <option value="risk">风险 (红)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="panel-header-action" style="margin-bottom:15px; display:flex; justify-content:space-between; align-items:center;">
+                            <h3 style="margin:0; font-size:15px; font-weight:600;">我管理的用户健康档案库</h3>
+                            <button class="btn btn-primary" onclick="openAddPatientModal()">+ 新增居民档案</button>
+                        </div>
+                        
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>姓名</th>
+                                        <th>手机号</th>
+                                        <th>性别/年龄</th>
+                                        <th>BMI状态</th>
+                                        <th>健康判定状态</th>
+                                        <th>实时体征</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="records-list">
+                                    <!-- 由 JS 渲染 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== 面板 3：健康干预方案 ==================== -->
+                <div class="view-panel" id="panel-recipes">
+                    <div class="card-glass">
+                        <div class="panel-header-action" style="margin-bottom:15px;">
+                            <h3>已开具的健康干预方案列表</h3>
+                            <button class="btn btn-primary" onclick="openAddRecipeModal()">+ 新定制干预方案</button>
+                        </div>
+                        
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>方案名称</th>
+                                        <th>接收居民</th>
+                                        <th>中医食疗建议</th>
+                                        <th>理疗与运动</th>
+                                        <th>起居睡眠</th>
+                                        <th>开具日期</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recipes-list-tbody">
+                                    <!-- 由 JS 动态渲染方案列表 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+    <!-- 新增/编辑干预方案弹窗 Modal -->
+    <div class="modal-overlay" id="recipe-edit-modal" style="z-index: 1000;">
+        <div class="modal-content" style="max-width: 900px; width: 90%; background: var(--bg-panel); backdrop-filter: blur(20px); border: 1px solid var(--border-color); box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
+            <div class="modal-header">
+                <h3 id="recipe-modal-title">个性化健康干预方案定制</h3>
+                <span class="modal-close" onclick="closeRecipeModal()">✕</span>
+            </div>
+            <div class="modal-body" style="padding-top:10px;">
+                <div class="recipe-custom-layout" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px;">
+                    <!-- 左侧：方案编辑表单 -->
+                    <div style="display:flex; flex-direction:column; gap:10px;">
+                        <div class="form-group">
+                            <label class="form-label">选择在管居民</label>
+                            <select class="form-input" id="recp-patient-select" style="background:var(--bg-panel); color:var(--text-primary); border:1px solid var(--border-color);">
+                                <!-- 由 JS 渲染在管居民 -->
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">方案名称 (限30字)</label>
+                            <input type="text" class="form-input" id="recp-title" placeholder="例如：气虚型轻度高血压调理方案">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">中医食疗建议 (限500字)</label>
+                            <textarea class="form-input" id="recp-diet" style="height:60px; resize:none;" placeholder="食疗建议、调理方剂或药膳膳食配比..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">理疗与运动建议 (限300字)</label>
+                            <textarea class="form-input" id="recp-sport" style="height:50px; resize:none;" placeholder="如太极拳、八段锦训练时长等..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">作息改善策略 (限300字)</label>
+                            <textarea class="form-input" id="recp-sleep" style="height:50px; resize:none;" placeholder="起居时辰及作息改善要求..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">医生专属医嘱 (限200字)</label>
+                            <textarea class="form-input" id="recp-advise" style="height:40px; resize:none;" placeholder="例如：心率血氧如持续异常，请尽快线下复诊..."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">推荐关联商品 (多选)</label>
+                            <div class="checkbox-group" id="recp-goods-checkboxes" style="max-height:80px; overflow-y:auto; padding:5px; border:1px solid var(--border-color); border-radius:6px; background:rgba(0,0,0,0.05);">
+                                <!-- JS 渲染可用商品 -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 右侧：方案模板一键套用 -->
+                    <div style="display:flex; flex-direction:column; gap:10px; border-left: 1px solid var(--border-color); padding-left:20px;">
+                        <h4 style="font-size:12px; color:var(--accent); margin-bottom:5px;">常用中医健康方案模板 (一键套用)</h4>
+                        <div class="template-list" style="display:flex; flex-direction:column; gap:10px; overflow-y:auto; max-height:420px;">
+                            
+                            <div class="template-card" onclick="applyRecipeTemplate(1)" style="cursor:pointer; padding:10px; border:1px solid var(--border-color); border-radius:8px; background:rgba(255,255,255,0.02); transition:0.3s;">
+                                <strong>🍵 脾虚湿盛失眠调理模板</strong>
+                                <p style="font-size:10px; color:var(--text-secondary); margin-top:4px; line-height:1.4;">食疗多以薏米红豆山药为主，运动配合午后八段锦理气化湿，夜里10点前入睡。</p>
+                            </div>
+                            
+                            <div class="template-card" onclick="applyRecipeTemplate(2)" style="cursor:pointer; padding:10px; border:1px solid var(--border-color); border-radius:8px; background:rgba(255,255,255,0.02); transition:0.3s;">
+                                <strong>🧘 轻度高血压肝阳上亢运动模板</strong>
+                                <p style="font-size:10px; color:var(--text-secondary); margin-top:4px; line-height:1.4;">配合晚间太极拳及意守涌泉舒缓交感神经，多食苦瓜芹菜，控盐控脂。</p>
+                            </div>
+                            
+                            <div class="template-card" onclick="applyRecipeTemplate(3)" style="cursor:pointer; padding:10px; border:1px solid var(--border-color); border-radius:8px; background:rgba(255,255,255,0.02); transition:0.3s;">
+                                <strong>🍵 气阴两虚气短乏力茶饮模板</strong>
+                                <p style="font-size:10px; color:var(--text-secondary); margin-top:4px; line-height:1.4;">推荐人参黄精生脉饮代茶频服，晨起温和慢跑，切勿过度劳累及大汗淋漓。</p>
+                            </div>
+
+                        </div>
+                        <div style="font-size:9px; color:var(--text-muted); line-height:1.4; margin-top:10px;">
+                            💡 说明：选择上方方案模板将自动填入左侧编辑域。医生可在二次微调后确认下发并保存。
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding-top:15px; border-top: 1px solid var(--border-color); display:flex; justify-content:flex-end; gap:10px;">
+                <button class="btn btn-secondary" onclick="closeRecipeModal()">取消</button>
+                <button class="btn btn-success" onclick="submitHealthRecipe()">确认下发方案并永久归档</button>
+            </div>
+        </div>
+    </div>
+
+                <!-- ==================== 面板 4：IM 智能会话 ==================== -->
+                <div class="view-panel" id="panel-im">
+                    <div class="card-glass" style="padding:20px; height: 580px; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:20px; text-align:center;">
+                        <svg viewBox="0 0 24 24" style="width:64px; height:64px; fill:var(--accent);"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+                        <div style="max-width:480px;">
+                            <h3 style="font-size:16px; margin-bottom:10px;">即时通信双向联动演练入口</h3>
+                            <p style="font-size:12px; color:var(--text-secondary); line-height:1.6; margin-bottom:20px;">
+                                平台高保真双机联动演练器提供了最完整的实时 IM 会话功能。为了在演示时具有最佳的侧边大屏互动、手表异常 30s 波动监测、高危警报自动红闪以及转诊就医引导，建议直接使用联动演练器进行汇报。
+                            </p>
+                            <a href="doctor_connect.html" class="btn btn-accent" style="padding:10px 24px; text-decoration:none;">开启双端 IM 连通演练 (doctor_connect.html)</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== 面板 5：个人账号安全 ==================== -->
+                <div class="view-panel" id="panel-account">
+                    <div class="recipe-custom-layout">
+                        <!-- 修改密码 -->
+                        <div class="card-glass">
+                            <h3>修改登录密码</h3>
+                            <div class="form-group" style="margin-top:15px;">
+                                <label class="form-label">原密码</label>
+                                <input type="password" class="form-input" id="oldPassword" placeholder="输入原密码 (默认 admin)">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">新密码 (至少8位, 包含字母和数字)</label>
+                                <input type="password" class="form-input" id="newPassword" placeholder="输入新密码">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">确认新密码</label>
+                                <input type="password" class="form-input" id="confirmPassword" placeholder="再次输入新密码">
+                            </div>
+                            <button class="btn btn-primary" onclick="submitPasswordChange()" style="width:100%; justify-content:center; margin-top:10px;">提交修改密码</button>
+                        </div>
+
+                        <!-- 手机安全换绑 -->
+                        <div class="card-glass">
+                            <h3>安全换绑手机号 (双向验证)</h3>
+                            <div class="phone-status-display" style="margin: 15px 0 10px;">
+                                <span>当前绑定手机号：</span>
+                                <strong id="currentBindPhone">138****8888</strong>
+                            </div>
+                            
+                            <!-- 第一步 -->
+                            <div id="phone-step-1">
+                                <div class="form-group">
+                                    <label class="form-label">获取原手机验证码以确认身份</label>
+                                    <div class="sms-code-group">
+                                        <input type="text" class="form-input" id="oldCodeInput" placeholder="原号码验证码">
+                                        <button class="sms-send-btn" id="oldSmsBtn" onclick="sendOldPhoneSms()">获取验证码</button>
+                                    </div>
+                                </div>
+                                <button class="btn btn-accent" onclick="nextPhoneStep()" style="width:100%; justify-content:center; margin-top:10px;">验证身份并进入下一步</button>
+                            </div>
+
+                            <!-- 第二步 -->
+                            <div id="phone-step-2" style="display:none;">
+                                <div class="form-group">
+                                    <label class="form-label">新手机号</label>
+                                    <input type="text" class="form-input" id="newPhoneInput" placeholder="输入新11位手机号">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">新手机验证码</label>
+                                    <div class="sms-code-group">
+                                        <input type="text" class="form-input" id="newCodeInput" placeholder="新号码验证码">
+                                        <button class="sms-send-btn" id="newSmsBtn" onclick="sendNewPhoneSms()">获取验证码</button>
+                                    </div>
+                                </div>
+                                <button class="btn btn-primary" onclick="submitPhoneChange()" style="width:100%; justify-content:center; margin-top:10px;">确认安全换绑</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- ==================== 科普内容发布与编辑模态框 ==================== -->
+    <div class="modal-overlay" id="article-modal">
+        <div class="modal-content">
+            <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:10px; margin-bottom:15px;">
+                <h3 id="article-modal-title">发布科普图文文章</h3>
+                <span class="modal-close" style="cursor:pointer;" onclick="closeAddArticleModal()">✕</span>
+            </div>
+            <div class="form-group">
+                <label class="form-label">文章标题</label>
+                <input type="text" class="form-input" id="art-title" placeholder="例如：春季养肝防气滞食疗指南">
+            </div>
+            <div class="form-group">
+                <label class="form-label">正文文字</label>
+                <textarea class="form-input" id="art-body" style="height:120px; resize:none;" placeholder="请输入科普文章正文内容..."></textarea>
+            </div>
+            <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px; margin-top:15px; border-top:1px solid var(--border-color); padding-top:10px;">
+                <button class="btn btn-secondary" onclick="closeAddArticleModal()">取消</button>
+                <button class="btn btn-primary" id="art-submit-btn" onclick="submitAddArticle()">确认发布科普</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="video-modal">
+        <div class="modal-content">
+            <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:10px; margin-bottom:15px;">
+                <h3 id="video-modal-title">发布科普微视频</h3>
+                <span class="modal-close" style="cursor:pointer;" onclick="closeAddVideoModal()">✕</span>
+            </div>
+            <div class="form-group">
+                <label class="form-label">视频科普标题</label>
+                <input type="text" class="form-input" id="vid-title" placeholder="例如：太极拳涌泉静息呼吸法教学">
+            </div>
+            <div class="form-group">
+                <label class="form-label">模拟上传视频文件 (仅限MP4/MOV，小于100MB)</label>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <input type="number" class="form-input" id="vid-size" style="width:100px;" placeholder="文件大小MB">
+                    <span style="font-size:10px; color:var(--text-secondary);">MB (校验大小)</span>
+                </div>
+            </div>
+            <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px; margin-top:15px; border-top:1px solid var(--border-color); padding-top:10px;">
+                <button class="btn btn-secondary" onclick="closeAddVideoModal()">取消</button>
+                <button class="btn btn-primary" id="vid-submit-btn" onclick="submitAddVideo()">提交发布并异步转码</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 6. 生理数字人个人详情看板弹窗 (浅色科技版，支持二级下钻) ==================== -->
+    <div class="modal-overlay" id="record-detail-modal" onclick="closeRecordDetailModal()">
+        <div class="record-detail-container" onclick="event.stopPropagation()">
+            
+            <div class="modal-close-btn" onclick="closeRecordDetailModal()">✕</div>
+            
+            <div class="record-detail-title">
+                <h2>居民健康画像数字孪生看板 <span class="sync-status" id="headerTimeDetail">手表指标 5s 动态刷新</span></h2>
+            </div>
+
+            <div class="record-detail-layout">
+                <!-- 左列：基础信息 + 5大体征数据 + 趋势图 -->
+                <div class="record-side-col">
+                    
+                    <!-- 模块 B: 用户核心信息 -->
+                    <div class="info-block">
+                        <div class="info-block-title">👤 用户核心资料</div>
+                        <div class="profile-grid">
+                            <div class="profile-item">
+                                <span class="profile-label">用户名</span>
+                                <span class="profile-val" id="pat-name">用****6</span>
+                            </div>
+                            <div class="profile-item">
+                                <span class="profile-label">手机号</span>
+                                <span class="profile-val" id="pat-phone">139****9056</span>
+                            </div>
+                            <div class="profile-item">
+                                <span class="profile-label">性别年龄</span>
+                                <span class="profile-val" id="pat-age">男 / 32岁</span>
+                            </div>
+                            <div class="profile-item">
+                                <span class="profile-label">身高体重</span>
+                                <span class="profile-val" id="pat-body">170cm / 69kg</span>
+                            </div>
+                            <div class="profile-item">
+                                <span class="profile-label">BMI</span>
+                                <span class="profile-val text-neon-green" id="pat-bmi">23.88 <span class="bmi-badge">正常</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 模块 D: 实时生理体征 data -->
+                    <div class="info-block" style="margin-top: 15px;">
+                        <div class="info-block-title">⌚ 实时生理体征 (手表实时监测)</div>
+                        <div class="flex-col gap-10">
+                            <!-- D-1 心率 -->
+                            <div class="vital-card border-heart">
+                                <div class="vital-icon-box bg-heart">❤️</div>
+                                <div class="vital-content">
+                                    <div class="vital-row">
+                                        <span class="vital-label">实时心率</span>
+                                        <span class="vital-status text-neon-green" id="det-hr-status">正常</span>
+                                    </div>
+                                    <div class="vital-row-data">
+                                        <span class="vital-number text-neon-cyan" id="det-hr">80</span>
+                                        <span class="vital-unit">次/分</span>
+                                    </div>
+                                    <div class="vital-time" id="det-hr-time">更新时间: 刚刚</div>
+                                </div>
+                            </div>
+
+                            <!-- D-2 睡眠 -->
+                            <div class="vital-card border-sleep">
+                                <div class="vital-icon-box bg-sleep">🛌</div>
+                                <div class="vital-content">
+                                    <div class="vital-row">
+                                        <span class="vital-label">睡眠时长</span>
+                                        <span class="vital-status text-neon-green" id="det-sleep-status">正常</span>
+                                    </div>
+                                    <div class="vital-row-data">
+                                        <span class="vital-number text-neon-cyan" id="det-sleep">7.5</span>
+                                        <span class="vital-unit">小时</span>
+                                    </div>
+                                    <div class="vital-time" id="det-sleep-time">更新时间: 刚刚</div>
+                                </div>
+                            </div>
+
+                            <!-- D-3 血压 -->
+                            <div class="vital-card border-bp">
+                                <div class="vital-icon-box bg-bp">🩺</div>
+                                <div class="vital-content">
+                                    <div class="vital-row">
+                                        <span class="vital-label">血压状况</span>
+                                        <span class="vital-status text-neon-green" id="det-bp-status">正常</span>
+                                    </div>
+                                    <div class="vital-row-data">
+                                        <span class="vital-number text-neon-cyan" id="det-bp">120/80</span>
+                                        <span class="vital-unit">mmHg</span>
+                                    </div>
+                                    <div class="vital-time" id="det-bp-time">更新时间: 刚刚</div>
+                                </div>
+                            </div>
+
+                            <!-- D-4 血氧 -->
+                            <div class="vital-card border-o2">
+                                <div class="vital-icon-box bg-o2">🩸</div>
+                                <div class="vital-content">
+                                    <div class="vital-row">
+                                        <span class="vital-label">血氧饱和度</span>
+                                        <span class="vital-status text-neon-green" id="det-spo2-status">正常</span>
+                                    </div>
+                                    <div class="vital-row-data">
+                                        <span class="vital-number text-neon-cyan" id="det-spo2">99</span>
+                                        <span class="vital-unit">%</span>
+                                    </div>
+                                    <div class="vital-time" id="det-spo2-time">更新时间: 刚刚</div>
+                                </div>
+                            </div>
+
+                            <!-- D-5 步数 -->
+                            <div class="vital-card border-step">
+                                <div class="vital-icon-box bg-step">🏃</div>
+                                <div class="vital-content">
+                                    <div class="vital-row">
+                                        <span class="vital-label">今日步数</span>
+                                        <span class="vital-status text-neon-green" id="det-step-status">达标</span>
+                                    </div>
+                                    <div class="vital-row-data">
+                                        <span class="vital-number text-neon-cyan" id="det-step">8000</span>
+                                        <span class="vital-unit">步</span>
+                                    </div>
+                                    <div class="vital-time" id="det-step-time">更新时间: 刚刚</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 模块 E: 用户历史趋势折线图 -->
+                    <div class="info-block" style="margin-top: 15px; height: 230px; display: flex; flex-direction: column;">
+                        <div class="info-block-title">📈 生理指标30天趋势历史</div>
+                        <div class="trends-tab-group">
+                            <button class="trend-tab active" data-type="heart" onclick="switchDetailTrend('heart')">心率</button>
+                            <button class="trend-tab" data-type="sleep" onclick="switchDetailTrend('sleep')">睡眠</button>
+                            <button class="trend-tab" data-type="bp" onclick="switchDetailTrend('bp')">血压</button>
+                            <button class="trend-tab" data-type="o2" onclick="switchDetailTrend('o2')">血氧</button>
+                            <button class="trend-tab" data-type="step" onclick="switchDetailTrend('step')">步数</button>
+                        </div>
+                        <div class="trend-chart-draw-area" style="flex-grow: 1; margin-top: 10px;">
+                            <svg id="detailTrendSVG" width="100%" height="100%" viewBox="0 0 280 130" preserveAspectRatio="none">
+                                <!-- JS 动态重绘折线与渐变 -->
+                            </svg>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- 中列：3D生理数字人展示区 -->
+                <div class="record-center-col">
+                    
+                    <!-- 模块 C: 3D数字人及发光底座 -->
+                    <div class="twin-model-container">
+                        
+                        <!-- 悬浮标签系统 -->
+                        <div class="floating-tag-item tag-l" id="detTagHeart" style="top: 100px; left: 10px;">
+                            <span class="tag-status-icon bg-green">🟢</span>
+                            <span class="tag-txt">心率: 80bpm</span>
+                        </div>
+                        
+                        <div class="floating-tag-item tag-r" id="detTagSleep" style="top: 140px; right: 10px;">
+                            <span class="tag-status-icon bg-green">🟢</span>
+                            <span class="tag-txt">睡眠: 7.5h</span>
+                        </div>
+
+                        <div class="floating-tag-item tag-l" id="detTagBp" style="top: 180px; left: 5px;">
+                            <span class="tag-status-icon bg-green">🟢</span>
+                            <span class="tag-txt">血压: 120/80</span>
+                        </div>
+
+                        <div class="floating-tag-item tag-r" id="detTagO2" style="top: 220px; right: 5px;">
+                            <span class="tag-status-icon bg-green">🟢</span>
+                            <span class="tag-txt">血氧: 99%</span>
+                        </div>
+
+                        <div class="floating-tag-item tag-l" id="detTagStep" style="bottom: 80px; left: 15px;">
+                            <span class="tag-status-icon bg-green">🟢</span>
+                            <span class="tag-txt">步数: 8000步</span>
+                        </div>
+
+                        <!-- 虚线引线 SVG 图层 -->
+                        <svg class="pointer-line-layer" id="pointerLineLayer" width="100%" height="100%">
+                            <!-- 动态划线 -->
+                        </svg>
+
+                        <!-- 半透明蓝色 3D 数字人 -->
+                        <div class="human-mesh-box">
+                            <svg viewBox="0 0 100 240" class="human-mesh-svg">
+                                <!-- 身体轮廓骨骼线 -->
+                                <path class="body-skeleton" d="M50 20 L50 220 M30 60 L70 60 M30 60 L35 120 L28 180 M70 60 L65 120 L72 180 M40 130 L38 180 L42 230 M60 130 L62 180 L58 230 M40 130 L60 130" stroke="#0284c7" stroke-width="1.2" fill="none" opacity="0.6"/>
+                                <circle cx="50" cy="30" r="14" stroke="#0284c7" stroke-width="1.5" fill="none" opacity="0.5"/>
+                                <!-- 脑部微变发光 -->
+                                <circle cx="50" cy="30" r="4" fill="#0284c7" opacity="0.8" class="skeleton-glow" id="detBrainGlow"></circle>
+                                <!-- 心脏跳动发光 -->
+                                <circle cx="48" cy="72" r="5" fill="#ef4444" id="detHeartGlow" class="heart-pulse-node"></circle>
+                                <!-- 肺部发光 -->
+                                <ellipse cx="50" cy="85" rx="7" ry="9" stroke="#0284c7" stroke-width="0.8" fill="none" opacity="0.4"/>
+                                <!-- 胃部发光 -->
+                                <path d="M46 102 Q50 96 54 105 Q58 114 48 116 Z" stroke="#0284c7" stroke-width="0.8" fill="none" opacity="0.4"/>
+                                <!-- 肾脏发光 -->
+                                <circle cx="42" cy="120" r="2.5" fill="#0284c7" opacity="0.4"></circle>
+                                <circle cx="58" cy="120" r="2.5" fill="#0284c7" opacity="0.4"></circle>
+                            </svg>
+                        </div>
+
+                        <!-- 双层自旋转底座 -->
+                        <div class="digital-pedestal">
+                            <div class="pedestal-ring ring-cw"></div>
+                            <div class="pedestal-ring ring-ccw"></div>
+                        </div>
+
+                        <!-- 24小时评估总体状态 -->
+                        <div class="pedestal-health-score">
+                            <div class="score-lbl">24小时健康评估</div>
+                            <div class="score-status text-neon-green" id="det-general-status">正常</div>
+                            <div class="score-stars" id="det-general-stars">★★★★☆</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右列：疾病预测 + 睡眠与运动直方图 + 八维中医雷达图 -->
+                <div class="record-side-col">
+                    
+                    <!-- 模块 F: 未来一个月疾病风险评估 -->
+                    <div class="info-block">
+                        <div class="info-block-title">🔮 未来一个月疾病风险预测</div>
+                        <div class="risk-bar-list">
+                            <div class="bar-item">
+                                <div class="bar-meta"><span>脑血管风险</span><span id="det-risk-stroke">5.2%</span></div>
+                                <div class="bar-track"><div class="bar-fill bg-green" id="det-fill-stroke" style="width: 5.2%;"></div></div>
+                            </div>
+                            <div class="bar-item">
+                                <div class="bar-meta"><span>心力衰竭</span><span id="det-risk-heartfail">1.2%</span></div>
+                                <div class="bar-track"><div class="bar-fill bg-green" id="det-fill-heartfail" style="width: 1.2%;"></div></div>
+                            </div>
+                            <div class="bar-item">
+                                <div class="bar-meta"><span>冠心病</span><span id="det-risk-chd">0.8%</span></div>
+                                <div class="bar-track"><div class="bar-fill bg-green" id="det-fill-chd" style="width: 0.8%;"></div></div>
+                            </div>
+                            <div class="bar-item">
+                                <div class="bar-meta"><span>房颤风险</span><span id="det-risk-af">0.6%</span></div>
+                                <div class="bar-track"><div class="bar-fill bg-green" id="det-fill-af" style="width: 0.6%;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 模块 G: 睡眠分析直方图 -->
+                    <div class="info-block" style="margin-top: 15px;">
+                        <div class="info-block-title">🛌 睡眠周期分布监测</div>
+                        <div class="sleep-stacked-container">
+                            <div class="sleep-timeline-hours">
+                                <span class="sleep-time-lbl">入睡 22:30</span>
+                                <span class="sleep-time-lbl" style="text-align: right;">起 06:30</span>
+                            </div>
+                            <!-- 三色睡眠堆叠柱状图 -->
+                            <div class="sleep-bar-gauge">
+                                <div class="sleep-gauge-segment segment-deep" id="det-sleep-deep-pct" style="width: 35%;" title="深睡"></div>
+                                <div class="sleep-gauge-segment segment-light" id="det-sleep-light-pct" style="width: 50%;" title="浅睡"></div>
+                                <div class="sleep-gauge-segment segment-awake" id="det-sleep-awake-pct" style="width: 15%;" title="清醒"></div>
+                            </div>
+                            <!-- 数据比率明细 -->
+                            <div class="sleep-stats-detail" style="margin-top: 8px; display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; font-size: 10px;">
+                                <div><span style="color: #0369a1; display: block; font-weight: 600;">深睡</span><span id="det-sleep-deep-val">2.6h</span></div>
+                                <div><span style="color: #0284c7; display: block; font-weight: 600;">浅睡</span><span id="det-sleep-light-val">3.8h</span></div>
+                                <div><span style="color: #eab308; display: block; font-weight: 600;">清醒</span><span id="det-sleep-awake-val">1.1h</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 模块 H: 24h 运动强度直方图 -->
+                    <div class="info-block" style="margin-top: 15px;">
+                        <div class="info-block-title">🏃 24小时运动分布 (每小时强度)</div>
+                        <div class="motion-histogram-box">
+                            <div class="motion-bars-row" id="detMotionBarsRow">
+                                <!-- JS 动态画 24 根柱子 -->
+                            </div>
+                            <div class="motion-hours-labels">
+                                <span>00:00</span>
+                                <span>12:00</span>
+                                <span>24:00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 模块 I: 中医八维脏腑状况雷达图 -->
+                    <div class="info-block" style="margin-top: 15px; flex-grow: 1; display: flex; flex-direction: column;">
+                        <div class="info-block-title">☯️ 中医气血八维脏腑状况</div>
+                        <div class="tcm-radar-section" style="flex-grow: 1; display: grid; grid-template-columns: 140px 1fr; gap: 10px; align-items: center;">
+                            <!-- 雷达 SVG 绘图区 -->
+                            <div class="radar-svg-box">
+                                <svg width="140" height="140" id="tcmRadarSVG" style="display: block; overflow: visible;">
+                                    <!-- 动态渲染多边形网格及顶点 -->
+                                </svg>
+                            </div>
+                            <!-- 辨证病机与症状 -->
+                            <div class="radar-diagnosis-box">
+                                <div class="diag-title" id="detTcmDiagTitle">气血和平 🟢</div>
+                                <div class="diag-row-sub">
+                                    <span class="diag-lbl">出警病机</span>
+                                    <span class="diag-txt-val" id="detTcmDiagPulse">脉象平缓，脏腑气血运行周流。</span>
+                                </div>
+                                <div class="diag-row-sub" style="margin-top: 5px;">
+                                    <span class="diag-lbl">常见症状</span>
+                                    <span class="diag-txt-val" id="detTcmDiagSymptoms">神清气爽，饮食正常，无腹胀、失眠多梦。</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 居民档案 新增/编辑 Modal -->
+    <div class="modal-overlay" id="patient-modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 id="patient-modal-title">新增居民健康档案</h3>
+                <span class="modal-close" onclick="closePatientModal()">✕</span>
+            </div>
+            <div class="modal-body" style="max-height: 450px; overflow-y: auto; padding-right: 5px;">
+                <h4 style="font-size:12px; color:var(--accent); margin-bottom:10px; border-bottom:1px solid var(--border-color); padding-bottom:4px;">基本健康信息</h4>
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label class="form-label">居民姓名</label>
+                        <input type="text" class="form-input" id="pat-form-name" placeholder="请输入姓名">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">手机号</label>
+                        <input type="text" class="form-input" id="pat-form-phone" placeholder="请输入11位手机号">
+                    </div>
+                </div>
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label class="form-label">性别</label>
+                        <select class="form-input" id="pat-form-gender">
+                            <option value="男">男</option>
+                            <option value="女">女</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">年龄</label>
+                        <input type="text" class="form-input" id="pat-form-age" placeholder="例如：45岁">
+                    </div>
+                </div>
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label class="form-label">身高 (cm)</label>
+                        <input type="number" class="form-input" id="pat-form-height" placeholder="例如：170">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">体重 (kg)</label>
+                        <input type="number" step="0.1" class="form-input" id="pat-form-weight" placeholder="例如：65">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">健康判定状态</label>
+                        <input type="text" class="form-input" id="pat-form-state-display" readonly style="background:#f1f5f9; cursor:not-allowed;" value="健康 (绿)">
+                        <input type="hidden" id="pat-form-state" value="normal">
+                    </div>
+                </div>
+                
+                <h4 style="font-size:12px; color:var(--accent); margin:15px 0 10px; border-bottom:1px solid var(--border-color); padding-bottom:4px;">健康评估风险报告评级</h4>
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label class="form-label">脑血管风险评估</label>
+                        <select class="form-input" id="pat-form-cardio-risk" onchange="autoCalcHealthState()">
+                            <option value="低">低</option>
+                            <option value="中">中</option>
+                            <option value="高">高</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">情绪压力风险评估</label>
+                        <select class="form-input" id="pat-form-emotion-risk" onchange="autoCalcHealthState()">
+                            <option value="低">低</option>
+                            <option value="中">中</option>
+                            <option value="高">高</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">睡眠风险评估</label>
+                        <select class="form-input" id="pat-form-sleep-risk" onchange="autoCalcHealthState()">
+                            <option value="低">低</option>
+                            <option value="中">中</option>
+                            <option value="高">高</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <h4 style="font-size:12px; color:var(--accent); margin:15px 0 10px; border-bottom:1px solid var(--border-color); padding-bottom:4px;">手表监测体征 (初始模拟值)</h4>
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label class="form-label">心率 (bpm)</label>
+                        <input type="number" class="form-input" id="pat-form-hr" placeholder="如 75">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">血氧 (%)</label>
+                        <input type="number" class="form-input" id="pat-form-spo2" placeholder="如 98">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">血压 (mmHg)</label>
+                        <input type="text" class="form-input" id="pat-form-bp" placeholder="如 120/80">
+                    </div>
+                </div>
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label class="form-label">睡眠时长 (小时)</label>
+                        <input type="number" step="0.1" class="form-input" id="pat-form-sleep" placeholder="如 7.5">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">今日步数</label>
+                        <input type="number" class="form-input" id="pat-form-steps" placeholder="如 6000">
+                    </div>
+                </div>
+
+                <h4 style="font-size:12px; color:var(--accent); margin:15px 0 10px; border-bottom:1px solid var(--border-color); padding-bottom:4px;">中医辨证与经络信息</h4>
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label class="form-label">经络运行盘</label>
+                        <input type="text" class="form-input" id="pat-form-meridian" placeholder="如：心经 正常 (午时)">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">中医辨证</label>
+                        <input type="text" class="form-input" id="pat-form-syndrome" placeholder="如：脾虚湿盛">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">表现症状</label>
+                    <input type="text" class="form-input" id="pat-form-symptoms" placeholder="如：腹胀、失眠易醒">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">中医病机解释</label>
+                    <textarea class="form-input" id="pat-form-explanation" style="height: 60px; resize: none;" placeholder="例如：脾虚则运化失司..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closePatientModal()">取消</button>
+                <button class="btn btn-success" id="pat-form-submit-btn" onclick="submitPatientForm()">确认保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 全局提示框 -->
+    <div class="global-float-notification" id="doc-notification"></div>
+
+    <script src="doctor.js" charset="utf-8"></script>
+</body>
+</html>

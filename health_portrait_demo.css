@@ -1,0 +1,1227 @@
+/* health_portrait_demo.css */
+
+/* ==================== 1. 设计系统与变量 ==================== */
+:root {
+    --bg-darker: #020617;     /* 深蓝黑主背景 */
+    --bg-panel: rgba(6, 18, 36, 0.7); /* 面板半透明背景 */
+    --border-cyan: rgba(0, 240, 255, 0.25);
+    
+    /* 荧光主色调 */
+    --neon-cyan: #00f0ff;    /* 核心荧光蓝 */
+    --neon-green: #10b981;   /* 健康青绿 */
+    --neon-yellow: #f59e0b;  /* 亚健康警告黄 */
+    --neon-red: #ef4444;     /* 风险异常红 */
+    --neon-purple: #a855f7;  /* 科技紫 */
+    
+    /* 文本色 */
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    
+    /* 动画定义 */
+    --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==================== 2. 全局基础样式 ==================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body.portrait-body {
+    background-color: var(--bg-darker);
+    color: var(--text-primary);
+    font-family: 'Outfit', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* 科技感背景格网与粒子流光 */
+.cyber-grid {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background-image: 
+        linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+    background-position: center center;
+    z-index: -2;
+    pointer-events: none;
+}
+
+.cyber-glow-bg {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: 
+        radial-gradient(circle at 50% 50%, rgba(2, 132, 199, 0.1) 0%, transparent 60%),
+        radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.05) 0%, transparent 45%),
+        radial-gradient(circle at 90% 80%, rgba(245, 158, 11, 0.03) 0%, transparent 45%);
+    z-index: -1;
+    pointer-events: none;
+}
+
+.large-screen-container {
+    width: 100%;
+    max-width: 1920px;
+    margin: 0 auto;
+    padding: 0 20px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ==================== 3. 模块 A: 顶层标题栏 (Top Header) ==================== */
+.top-header {
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+    position: relative;
+    margin-bottom: 15px;
+    z-index: 10;
+}
+
+.top-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 10%; width: 80%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+}
+
+.header-left, .header-right {
+    width: 30%;
+    display: flex;
+    align-items: center;
+}
+
+.header-left {
+    gap: 15px;
+}
+
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: var(--neon-green);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    letter-spacing: 1px;
+}
+
+.pulse-dot {
+    width: 6px;
+    height: 6px;
+    background-color: var(--neon-green);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--neon-green);
+    animation: glowPulse 1.5s infinite;
+}
+
+.time-stamp {
+    font-family: 'Outfit', monospace;
+    font-size: 13px;
+    color: var(--text-secondary);
+    letter-spacing: 0.5px;
+}
+
+/* A-1 界面主标题发光微变体 */
+.header-center {
+    width: 40%;
+    text-align: center;
+}
+
+.main-title {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 5px;
+    background: linear-gradient(180deg, #ffffff 40%, #cffafe 80%, var(--neon-cyan) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.6));
+    animation: textFlicker 4s infinite alternate;
+}
+
+.title-subtext {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.header-right {
+    justify-content: flex-end;
+}
+
+.back-portal-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 240, 255, 0.08);
+    border: 1px solid var(--border-cyan);
+    color: var(--neon-cyan);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 4px;
+    transition: var(--transition-fast);
+}
+
+.back-portal-btn:hover {
+    background: rgba(0, 240, 255, 0.2);
+    box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.back-portal-btn svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+}
+
+/* ==================== 4. 赛博面板通用样式 (Decal Box) ==================== */
+.cyber-panel {
+    background: var(--bg-panel);
+    border: 1px solid var(--border-cyan);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.05), inset 0 0 10px rgba(0, 240, 255, 0.05);
+    border-radius: 4px;
+    padding: 16px;
+    position: relative;
+    backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+}
+
+/* 科技风四角发光角标 */
+.cyber-panel::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px; width: 10px; height: 10px;
+    border-top: 2px solid var(--neon-cyan);
+    border-left: 2px solid var(--neon-cyan);
+}
+.cyber-panel::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; right: -1px; width: 10px; height: 10px;
+    border-bottom: 2px solid var(--neon-cyan);
+    border-right: 2px solid var(--neon-cyan);
+}
+
+/* 装饰性切边边饰 */
+.panel-border {
+    position: absolute;
+    top: -1px; right: -1px; width: 20px; height: 2px;
+    background: var(--neon-cyan);
+    opacity: 0.5;
+}
+
+.panel-header-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.panel-icon {
+    font-size: 14px;
+    filter: drop-shadow(0 0 4px var(--neon-cyan));
+}
+
+.panel-title {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--text-primary);
+}
+
+.panel-tag {
+    margin-left: auto;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 10px;
+    letter-spacing: 0.5px;
+}
+
+.cyan-tag { background: rgba(0, 240, 255, 0.1); border: 1px solid rgba(0, 240, 255, 0.25); color: var(--neon-cyan); }
+.pulse-tag { 
+    background: rgba(239, 68, 68, 0.1); 
+    border: 1px solid rgba(239, 68, 68, 0.25); 
+    color: var(--neon-red);
+    animation: borderPulse 1.5s infinite alternate;
+}
+
+.panel-body {
+    flex-grow: 1;
+    position: relative;
+}
+
+/* 切角面板的裁剪路径 */
+.clip-topLeft {
+    clip-path: polygon(15px 0%, 100% 0%, 100% 100%, 0% 100%, 0% 15px);
+}
+.clip-topRight {
+    clip-path: polygon(0% 0%, calc(100% - 15px) 0%, 100% 15px, 100% 100%, 0% 100%);
+}
+.clip-bottomLeft {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 15px 100%, 0% calc(100% - 15px));
+}
+.clip-bottomRight {
+    clip-path: polygon(0% 0%, 100% 0%, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0% 100%);
+}
+.clip-bottom {
+    clip-path: polygon(0% 0%, 100% 0%, 98% 100%, 2% 100%);
+}
+
+/* ==================== 5. 大屏布局网格 (Dashboard Grid) ==================== */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 380px 1fr 380px;
+    gap: 15px;
+    flex-grow: 1;
+    height: calc(100vh - 110px);
+}
+
+.left-section, .right-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 100%;
+}
+
+.center-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: 100%;
+}
+
+/* ==================== 6. 模块 B: 用户核心信息 (User Profiles) ==================== */
+#panel-profile {
+    height: 140px;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 12px;
+    padding-top: 5px;
+}
+
+.profile-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.profile-label {
+    font-size: 10px;
+    color: var(--text-secondary);
+}
+
+.profile-val {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.bmi-badge {
+    display: inline-block;
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid var(--neon-green);
+    color: var(--neon-green);
+    font-size: 9px;
+    padding: 0px 4px;
+    border-radius: 3px;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+/* ==================== 7. 模块 D: 实时生理体征数据 ==================== */
+#panel-vitals {
+    height: 480px;
+}
+
+.vital-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 6px;
+    padding: 10px 14px;
+    transition: var(--transition-fast);
+}
+
+.vital-card:hover {
+    background: rgba(0, 240, 255, 0.03);
+    border-color: rgba(0, 240, 255, 0.15);
+    transform: translateX(3px);
+}
+
+/* 五种体征卡片的细分边框色 */
+.border-heart { border-left: 3px solid var(--neon-red); }
+.border-o2 { border-left: 3px solid var(--neon-cyan); }
+.border-sleep { border-left: 3px solid var(--neon-yellow); }
+.border-bp { border-left: 3px solid var(--neon-purple); }
+.border-step { border-left: 3px solid var(--neon-green); }
+
+.vital-icon-box {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.vital-icon-box svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+.bg-heart { background: rgba(239, 68, 68, 0.1); color: var(--neon-red); }
+.bg-o2 { background: rgba(6, 182, 212, 0.1); color: var(--neon-cyan); }
+.bg-sleep { background: rgba(245, 158, 11, 0.1); color: var(--neon-yellow); }
+.bg-bp { background: rgba(168, 85, 247, 0.1); color: var(--neon-purple); }
+.bg-step { background: rgba(16, 185, 129, 0.1); color: var(--neon-green); }
+
+.vital-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.vital-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.vital-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.vital-status {
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.vital-row-data {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-top: 1px;
+}
+
+.vital-number {
+    font-family: 'Outfit', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.vital-unit {
+    font-size: 10px;
+    color: var(--text-muted);
+}
+
+.vital-time {
+    font-size: 9px;
+    color: var(--text-muted);
+    margin-top: 1px;
+}
+
+/* ==================== 8. 模块 E: 用户生理数据趋势 ==================== */
+#panel-trends {
+    flex-grow: 1;
+    min-height: 220px;
+}
+
+.trends-tab-group {
+    display: flex;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    padding: 2px;
+    margin-bottom: 12px;
+}
+
+.trend-tab {
+    flex-grow: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 10px;
+    font-weight: 600;
+    padding: 4px 0;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.trend-tab.active {
+    background: rgba(0, 240, 255, 0.15);
+    color: var(--neon-cyan);
+    box-shadow: inset 0 0 5px rgba(0, 240, 255, 0.1);
+    border: 1px solid rgba(0, 240, 255, 0.25);
+}
+
+.trend-chart-wrapper {
+    width: 100%;
+    height: 145px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.trend-chart-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.chart-grid-line {
+    stroke: rgba(255, 255, 255, 0.03);
+    stroke-width: 1;
+    stroke-dasharray: 2, 2;
+}
+
+.chart-axis-line {
+    stroke: rgba(0, 240, 255, 0.15);
+    stroke-width: 1;
+}
+
+.chart-text {
+    fill: var(--text-muted);
+    font-size: 8px;
+    font-family: 'Outfit', monospace;
+}
+
+.chart-text.text-start { text-anchor: start; }
+.chart-text.text-middle { text-anchor: middle; }
+.chart-text.text-end { text-anchor: end; }
+
+/* ==================== 9. 模块 C: 生理数字人中心展示区 ==================== */
+.twin-digital-viewport {
+    flex-grow: 1;
+    background: radial-gradient(circle at 50% 45%, rgba(6, 24, 48, 0.4) 0%, rgba(2, 6, 23, 0.95) 80%);
+    border: 1px solid var(--border-cyan);
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.08), inset 0 0 20px rgba(0, 240, 255, 0.05);
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+.view-overlay-border {
+    position: absolute;
+    top: 5px; left: 5px; right: 5px; bottom: 5px;
+    border: 1px dashed rgba(0, 240, 255, 0.05);
+    pointer-events: none;
+}
+
+/* 扫描线效果 */
+.scanning-beam {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 4px;
+    background: linear-gradient(180deg, transparent, rgba(0, 240, 255, 0.3), transparent);
+    animation: scanLine 6s linear infinite;
+    pointer-events: none;
+    z-index: 2;
+}
+
+/* C-2 浮动身体状态标签 */
+.floating-tags-container {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.float-tag {
+    position: absolute;
+    width: 140px;
+    height: 44px;
+    background: rgba(3, 15, 30, 0.85);
+    border: 1px solid rgba(0, 240, 255, 0.2);
+    border-radius: 22px;
+    padding: 6px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    pointer-events: auto;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5), 0 0 10px rgba(0, 240, 255, 0.05);
+    animation: floatTag 4s ease-in-out infinite alternate;
+}
+
+.tag-left { left: 5%; }
+.tag-right { right: 5%; }
+
+/* 微调漂浮延迟 */
+.tag-sleep { animation-delay: 0s; }
+.tag-bp { animation-delay: 1.2s; }
+.tag-o2 { animation-delay: 2.4s; }
+.tag-bmi { animation-delay: 0.6s; }
+.tag-heart { animation-delay: 1.8s; }
+.tag-step { animation-delay: 3s; }
+
+.tag-glow-border {
+    position: absolute;
+    top: -1px; left: -1px; right: -1px; bottom: -1px;
+    border-radius: 22px;
+    background: transparent;
+    pointer-events: none;
+}
+
+.float-tag:hover .tag-glow-border {
+    border: 1px solid var(--neon-cyan);
+    box-shadow: 0 0 8px var(--neon-cyan);
+}
+
+.tag-icon {
+    font-size: 13px;
+}
+
+.tag-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.tag-title {
+    font-size: 9px;
+    color: var(--text-secondary);
+}
+
+.tag-value {
+    font-size: 11px;
+    font-weight: 700;
+}
+
+/* 连接线 */
+.connecting-lines-svg {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.laser-line {
+    fill: none;
+    stroke-width: 1;
+    stroke-dasharray: 4, 4;
+    opacity: 0.45;
+}
+
+.line-green { stroke: var(--neon-green); }
+.line-yellow { stroke: var(--neon-yellow); }
+
+/* C-1 数字人与发光底座容器 */
+.twin-model-container {
+    width: 320px;
+    height: 380px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 15px;
+    position: relative;
+    z-index: 2;
+}
+
+.human-silhouette-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.skeletal-line {
+    stroke: var(--neon-cyan);
+    stroke-width: 1.2;
+    stroke-linecap: round;
+    fill: none;
+    opacity: 0.65;
+}
+
+.skeletal-line.spine {
+    stroke-width: 1.8;
+}
+
+.skeletal-line.rib {
+    opacity: 0.45;
+    stroke-width: 0.8;
+}
+
+/* 心脏搏动 */
+.organ-heart {
+    fill: var(--neon-red);
+    stroke: var(--neon-red);
+    stroke-width: 0.5;
+    animation: heartBeat 1.2s infinite;
+}
+
+/* 传感器光效 */
+.watch-sensor-glow {
+    fill: var(--neon-green);
+    stroke: var(--neon-green);
+    stroke-width: 0.5;
+    animation: sensorGlow 2s infinite alternate;
+}
+
+/* 3D 倾斜底座 */
+.pedestal-container {
+    position: absolute;
+    bottom: 40px;
+    width: 240px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+}
+
+.pedestal-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.ring-outer {
+    fill: none;
+    stroke: var(--neon-cyan);
+    stroke-width: 1.2;
+    opacity: 0.35;
+    stroke-dasharray: 10, 6;
+    animation: rotateClockwise 25s linear infinite;
+    transform-origin: 150px 50px;
+}
+
+.ring-inner {
+    fill: none;
+    stroke: var(--neon-cyan);
+    stroke-width: 1.8;
+    opacity: 0.6;
+    stroke-dasharray: 40, 20;
+    animation: rotateCounterClockwise 15s linear infinite;
+    transform-origin: 150px 50px;
+    filter: drop-shadow(0 0 5px var(--neon-cyan));
+}
+
+/* C-3 健康总体评估大徽章 */
+.assessment-container {
+    position: relative;
+    z-index: 4;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(0, 240, 255, 0.15);
+    border-radius: 20px;
+    padding: 6px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: -15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.assess-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.assess-badge {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 10px;
+}
+
+.bg-neon-yellow { background: var(--neon-yellow); color: #000; }
+.bg-neon-green { background: var(--neon-green); color: #000; }
+.bg-neon-red { background: var(--neon-red); color: #ffffff; }
+
+.assess-stars {
+    display: flex;
+    gap: 2px;
+    color: #eab308;
+    font-size: 13px;
+}
+
+/* ==================== 10. 模块 F: 未来一个月疾病风险概率 ==================== */
+#panel-risk {
+    height: 150px;
+}
+
+.disease-risk-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px 20px;
+    padding-top: 5px;
+}
+
+.risk-bar-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.risk-bar-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+}
+
+.disease-name {
+    color: var(--text-secondary);
+}
+
+.disease-percent {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+}
+
+.risk-progress-bg {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.risk-progress-bar {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.8s ease;
+}
+
+/* ==================== 11. 模块 G: 睡眠分析 ==================== */
+#panel-sleep {
+    height: 240px;
+}
+
+.sleep-summary-header {
+    display: flex;
+    justify-content: space-between;
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+}
+
+.sleep-summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.sleep-summary-lbl {
+    font-size: 9px;
+    color: var(--text-secondary);
+}
+
+.sleep-summary-val {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.sleep-analysis-main {
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: 15px;
+    align-items: center;
+}
+
+/* G-1 睡眠堆叠柱状图 */
+.sleep-stacked-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.sleep-timeline-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: var(--text-muted);
+}
+
+.sleep-stacked-bar {
+    height: 16px;
+    border-radius: 8px;
+    display: flex;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* 睡眠分段颜色：清醒黄，浅睡中绿，深睡深绿 */
+.sleep-segment {
+    height: 100%;
+    cursor: pointer;
+}
+
+.seg-awake { background-color: var(--neon-yellow); opacity: 0.85; }
+.seg-light { background-color: #34d399; } /* 中绿 */
+.seg-deep { background-color: #047857; }  /* 深绿 */
+
+.sleep-legend {
+    display: flex;
+    gap: 10px;
+    font-size: 9px;
+    color: var(--text-muted);
+    justify-content: center;
+    margin-top: 4px;
+}
+
+.legend-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.dot-awake { background: var(--neon-yellow); }
+.dot-light { background: #34d399; }
+.dot-deep { background: #047857; }
+
+/* G-3 睡眠阶段比例侧栏 */
+.sleep-ratio-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
+    padding-left: 15px;
+}
+
+.ratio-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ratio-lbl-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: var(--text-secondary);
+}
+
+.ratio-bar-bg {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 2px;
+}
+
+.ratio-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+}
+
+.bg-sleep-awake { background-color: var(--neon-yellow); }
+.bg-sleep-light { background-color: #34d399; }
+.bg-sleep-deep { background-color: #047857; }
+
+/* ==================== 12. 模块 H: 运动分析 ==================== */
+#panel-motion {
+    height: 240px;
+}
+
+.motion-steps-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    background: rgba(255, 255, 255, 0.015);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    border-radius: 4px;
+    padding: 8px 12px;
+}
+
+.motion-steps-lbl {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.motion-steps-val {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+}
+
+.steps-num {
+    font-family: 'Outfit', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.steps-unit {
+    font-size: 10px;
+    color: var(--text-muted);
+}
+
+/* H-1 运动强度 24h 条形图 */
+.motion-chart-wrapper {
+    height: 115px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 4px 6px;
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.02);
+    border-radius: 6px;
+}
+
+.motion-chart-bars {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    height: 90px;
+    width: 100%;
+}
+
+.motion-bar {
+    width: 3.2%;
+    background: rgba(0, 240, 255, 0.25);
+    border-radius: 1px 1px 0 0;
+    transition: height 0.5s ease, background 0.3s ease;
+}
+
+.motion-bar.active {
+    background: linear-gradient(180deg, var(--neon-cyan), var(--neon-purple));
+    box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+}
+
+.motion-chart-x {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8px;
+    color: var(--text-muted);
+    font-family: 'Outfit', monospace;
+    padding-top: 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ==================== 13. 模块 I: 器官分析与中医脉象诊断 ==================== */
+#panel-tcm {
+    flex-grow: 1;
+    min-height: 290px;
+}
+
+.tcm-grid-layout {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 15px;
+    height: 100%;
+    align-items: center;
+}
+
+/* I-1 SVG 八维雷达图 */
+.tcm-radar-section {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+}
+
+.tcm-radar-svg {
+    width: 90%;
+    height: 90%;
+}
+
+.radar-grid {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.04);
+    stroke-width: 0.8;
+}
+
+.radar-axis {
+    stroke: rgba(255, 255, 255, 0.04);
+    stroke-width: 0.8;
+}
+
+.radar-lbl {
+    font-size: 7.5px;
+    fill: var(--text-secondary);
+    font-weight: 500;
+}
+
+.radar-lbl.anchor-middle { text-anchor: middle; }
+.radar-lbl.anchor-start { text-anchor: start; }
+.radar-lbl.anchor-end { text-anchor: end; }
+
+/* 雷达中心点文字 */
+.radar-center-info {
+    position: absolute;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    background: rgba(3, 8, 16, 0.9);
+    border: 1px dashed rgba(0, 240, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+}
+
+.radar-info-label {
+    font-size: 8px;
+    color: var(--text-muted);
+}
+
+.radar-info-val {
+    font-size: 9.5px;
+    font-weight: 700;
+    margin-top: 2px;
+}
+
+/* I-3 & I-4 中医诊断与脉象解读列表 */
+.tcm-diagnose-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.diag-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.diag-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--neon-cyan);
+    letter-spacing: 0.5px;
+}
+
+.diag-list {
+    list-style: none;
+    font-size: 10px;
+    color: var(--text-secondary);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.diag-list li {
+    position: relative;
+    padding-left: 10px;
+}
+
+.diag-list li::before {
+    content: '▪';
+    color: var(--neon-cyan);
+    position: absolute;
+    left: 0;
+    font-size: 12px;
+    line-height: 1;
+}
+
+.diag-para {
+    font-size: 9.5px;
+    line-height: 1.45;
+}
+
+.affected-areas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.area-tag {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    color: var(--text-secondary);
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 2px;
+}
+
+/* ==================== 14. 辅助高亮与动效样式 ==================== */
+.text-neon-cyan { color: var(--neon-cyan); text-shadow: 0 0 6px rgba(0, 240, 255, 0.4); }
+.text-neon-green { color: var(--neon-green); text-shadow: 0 0 6px rgba(16, 185, 129, 0.4); }
+.text-neon-yellow { color: var(--neon-yellow); text-shadow: 0 0 6px rgba(245, 158, 11, 0.4); }
+.text-neon-red { color: var(--neon-red); text-shadow: 0 0 6px rgba(239, 68, 68, 0.4); }
+
+.flex-col { display: flex; flex-direction: column; }
+.gap-10 { gap: 10px; }
+
+/* 关键帧动画 */
+@keyframes glowPulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+@keyframes borderPulse {
+    0% { border-color: rgba(239, 68, 68, 0.2); }
+    100% { border-color: rgba(239, 68, 68, 0.6); }
+}
+
+@keyframes textFlicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+        filter: drop-shadow(0 0 10px rgba(0, 240, 255, 0.6));
+    }
+    20%, 24%, 55% {
+        filter: drop-shadow(0 0 3px rgba(0, 240, 255, 0.2));
+    }
+}
+
+@keyframes scanLine {
+    0% { top: 0%; }
+    50% { top: 100%; }
+    100% { top: 0%; }
+}
+
+@keyframes floatTag {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-6px); }
+}
+
+@keyframes rotateClockwise {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes rotateCounterClockwise {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(-360deg); }
+}
+
+@keyframes heartBeat {
+    0%, 100% { transform: scale(1) translate(0, 0); }
+    20%, 40% { transform: scale(1.2) translate(-2px, -3px); }
+}
+
+@keyframes sensorGlow {
+    0% { opacity: 0.4; }
+    100% { opacity: 1; filter: drop-shadow(0 0 4px var(--neon-green)); }
+}
+
+/* SVG 折线路径动画 */
+#trendLinePath {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: drawLine 2.5s ease-out forwards;
+}
+
+@keyframes drawLine {
+    to { stroke-dashoffset: 0; }
+}

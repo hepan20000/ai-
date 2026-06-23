@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>邵阳市中医主动健康应用 - 终版产品需求文档 (PRD)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- 使用国内极速且高可用的 BootCDN 镜像，保障联网状态下 Mermaid 流程图渲染 -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/mermaid/10.2.4/mermaid.min.js"></script>
+    
+    <style>
+        :root {
+            --primary: #0f766e; /* 邵阳中医药项目主色：深松石青 */
+            --primary-light: #f0fdfa;
+            --secondary: #0369a1; /* 医疗科技蓝 */
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --font-sans: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            line-height: 1.7;
+            padding-bottom: 60px;
+        }
+
+        /* 顶部操作条 */
+        .action-bar {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #115e59;
+        }
+
+        /* 汇报封面设计 */
+        .cover-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #071e22 0%, #102e30 50%, #1e1b4b 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 60px 10%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cover-page::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(15, 118, 110, 0.2) 0%, transparent 60%);
+            z-index: 1;
+        }
+
+        .cover-header {
+            z-index: 2;
+        }
+
+        .cover-logo {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            color: #2dd4bf;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cover-logo-icon {
+            width: 18px;
+            height: 18px;
+            background: #2dd4bf;
+            border-radius: 4px;
+        }
+
+        .cover-content {
+            max-width: 900px;
+            z-index: 2;
+            margin: auto 0;
+        }
+
+        .cover-title {
+            font-size: 42px;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 24px;
+            background: linear-gradient(to right, #ffffff, #2dd4bf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cover-subtitle {
+            font-size: 18px;
+            color: #94a3b8;
+            margin-bottom: 40px;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        .cover-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            z-index: 2;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 30px;
+        }
+
+        .metadata-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 200px);
+            gap: 30px;
+        }
+
+        .metadata-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meta-label {
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+
+        .meta-val {
+            font-size: 14px;
+            color: #cbd5e1;
+            font-weight: 500;
+        }
+
+        /* 文档核心内容容器 */
+        .content-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+            padding: 50px 70px;
+        }
+
+        /* Markdown 样式 */
+        .markdown-body h1, .markdown-body h2, .markdown-body h3 {
+            color: #0f172a;
+            font-weight: 700;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .markdown-body h1 {
+            font-size: 26px;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+        }
+
+        .markdown-body h2 {
+            font-size: 19px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .markdown-body h3 {
+            font-size: 16px;
+        }
+
+        .markdown-body p {
+            margin-bottom: 16px;
+            color: #334155;
+            text-align: justify;
+        }
+
+        .markdown-body strong {
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        /* 表格高级排版 */
+        .markdown-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 13px;
+        }
+
+        .markdown-body th, .markdown-body td {
+            border: 1px solid var(--border-color);
+            padding: 10px 14px;
+            text-align: left;
+        }
+
+        .markdown-body th {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .markdown-body tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        /* 引用框 */
+        .markdown-body blockquote {
+            border-left: 4px solid var(--primary);
+            background-color: var(--primary-light);
+            padding: 15px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .markdown-body blockquote p {
+            margin-bottom: 0;
+            color: #0f766e;
+            font-weight: 500;
+        }
+
+        /* 列表 */
+        .markdown-body ul, .markdown-body ol {
+            margin-left: 20px;
+            margin-bottom: 16px;
+            color: #334155;
+        }
+
+        .markdown-body li {
+            margin-bottom: 6px;
+        }
+
+        /* 行内代码与代码块 */
+        .markdown-body code {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 90%;
+            color: #0f172a;
+        }
+
+        .markdown-body pre {
+            background-color: #0f172a;
+            color: #e2e8f0;
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        .markdown-body pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            font-size: 12px;
+        }
+
+        /* Mermaid 流程图排版 */
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        /* ==========================================================================
+           打印优化系统 (@media print)
+           ========================================================================== */
+        @media print {
+            body {
+                background-color: white;
+                color: black;
+                padding-bottom: 0;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .cover-page {
+                height: 100vh;
+                min-height: 100vh;
+                page-break-after: always;
+                background: linear-gradient(135deg, #071e22 0%, #102e30 50%, #1e1b4b 100%) !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .content-container {
+                margin: 0;
+                padding: 0;
+                border: none;
+                box-shadow: none;
+                max-width: 100%;
+            }
+
+            .markdown-body h1, .markdown-body h2 {
+                page-break-after: avoid;
+            }
+
+            .markdown-body table, .markdown-body pre, .mermaid {
+                page-break-inside: avoid;
+            }
+
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 顶部的打印按钮 -->
+    <div class="action-bar no-print">
+        <button class="btn btn-primary" onclick="window.print()">
+            <svg style="width:14px; height:14px; fill:currentColor; margin-right:6px; display:inline-block; vertical-align:middle;" viewBox="0 0 24 24">
+                <path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/>
+            </svg>
+            另存为 PDF / 打印
+        </button>
+    </div>
+
+    <!-- 汇报封面 -->
+    <div class="cover-page">
+        <div class="cover-header">
+            <div class="cover-logo">
+                <div class="cover-logo-icon"></div>
+                SHAOYANG CHINESE MEDICINE PROJECT
+            </div>
+        </div>
+        
+        <div class="cover-content">
+            <h1 class="cover-title">邵阳市中医药传承创新发展示范项目<br>【中医主动健康应用】产品需求文档</h1>
+            <p class="cover-subtitle">基于“云边端协同、中西医融合”架构的区域级主动健康应用及基层馆阁赋能系统</p>
+        </div>
+        
+        <div class="cover-footer">
+            <div class="metadata-grid">
+                <div class="metadata-item">
+                    <span class="meta-label">项目承建</span>
+                    <span class="meta-val">上海融达信息科技有限公司</span>
+                </div>
+                <div class="metadata-item">
+                    <span class="meta-label">需求单位</span>
+                    <span class="meta-val">邵阳市中医药管理局 / 卫健委</span>
+                </div>
+                <div class="metadata-item">
+                    <span class="meta-label">发布日期</span>
+                    <span class="meta-val">2026-06-11 (V1.0 正式版)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 核心报告内容 (由 Python 静态编译塞入，确保离线 100% 成功显示内容) -->
+    <div class="content-container">
+        <div class="markdown-body" id="content">
+<h1>AI主动健康管理一体化平台 - 产品需求文档 (PRD)</h1>
+<table>
+<thead><tr>
+<th>项目名称</th>
+<th>AI主动健康管理一体化平台 (中西医融合主动健康应用)</th>
+<th>文档版本</th>
+<th>V1.0 (正式版)</th>
+</tr></thead><tbody>
+<tr>
+<td>撰写人</td>
+<td>资深产品经理 (PM) / 业务分析师 (BA)</td>
+<td>撰写日期</td>
+<td>2026-06-11</td>
+</tr>
+<tr>
+<td>文档定位</td>
+<td>聚焦中西医AI决策算法、五级预警场景与药食同源干预闭环的产品业务核心定义</td>
+</tr>
+</tbody></table>
+<hr style="border:none; border-top:1px solid var(--border-color); margin:30px 0;">
+<h2>1. 业务架构与数据流模型</h2>
+<p>本平台的核心业务逻辑为 <strong>“预警-画像-评估-调理-产品-科普”</strong> 六位一体的 24 小时闭环服务链条，旨在打破医疗与居家健康的数据孤岛。</p>
+<div class="mermaid">
+graph TD
+    subgraph 1. 多模态数据采集
+        A1[可穿戴设备数据:生理+行为]
+        A2[中医特色辨识:体质分型+四诊]
+        A3[专科自测问卷:主观症状]
+        A4[医院临床病历:检验+既往史]
+    end
+
+    subgraph 2. 主动健康AI模型底座
+        B1[西医指标层] --> B4[中西医融合AI分析引擎]
+        B2[中医辨证层] --> B4
+        B3[风险评估层] --> B4
+    end
+
+    subgraph 3. 个人多维健康画像
+        C1[综合健康评分 0-100]
+        C2[九种中医体质雷达]
+        C3[异常体征与风险标签]
+    end
+
+    subgraph 4. 业务闭环系统
+        D1[五级风险评估与响应]
+        D2[个性化多维调理方案]
+        D3[药食同源服务商城]
+        D4[AI科普与智能问答]
+    end
+
+    A1 & A2 & A3 & A4 --> B1 & B2 & B3
+    B4 --> C1 & C2 & C3
+    C1 & C2 & C3 --> D1
+    D1 --> D2 --> D3
+    C3 --> D4
+</div>
+<hr style="border:none; border-top:1px solid var(--border-color); margin:30px 0;">
+<h2>2. 核心 AI 模型底座设计 (三层融合模型)</h2>
+<p>AI 风险预警决策底座是平台的“智能大脑”。模型在推理时采用 <strong>“西医指标层 + 中医辨证层 + 风险评估层”</strong> 的三层架构，以实现中西医互补的“未病先防（提前30天预判体质偏移方向）”与“已病防变”。</p>
+<div class="mermaid">
+graph TD
+    subgraph 西医指标层
+        X1[时序体征:心率/血氧/睡眠]
+        X2[临床数据:空腹血糖/血脂/生化]
+        X3[病情主诉:胸闷/疲劳]
+    end
+
+    subgraph 中医辨证层
+        Y1[图像特征:舌质/苔色/苔质/舌形]
+        Y2[主观自测:九种体质维度分数]
+        Y3[专科问卷:四诊信息收集]
+    end
+
+    subgraph 风险评估层
+        Z1[西医疾病发病概率算法]
+        Z2[中医体质偏移度算法]
+        Z3[急危重症评分算法]
+    end
+
+    X1 & X2 & X3 --> Z1
+    Y1 & Y2 & Y3 --> Z2
+    Z1 & Z2 --> Z3[中西医多模态特征矩阵] --> F[输出：五级风险分层与调理标签]
+</div>
+<h3>2.1 第一层：西医指标层 (Western Medicine Layer)</h3>
+<ul>
+<li>  <strong>输入特征</strong>：</li>
+<li>  *时序生理指标*：静息心率均值、血氧饱和度均值、呼吸暂停指数（AHI）、深睡比例。</li>
+<li>  *理化检查指标*：空腹血糖 (FPG)、糖化血红蛋白 (HbA1c)、低密度脂蛋白 (LDL-C)。</li>
+<li>  *症状主诉数据*：是否有胸闷、心悸、乏力等症状。</li>
+<li>  <strong>处理规则</strong>：将时序体征与理化检查做特征交叉，计算西医各慢病（如糖尿病、高血压）发病概率评分。</li>
+</ul>
+<h3>2.2 第二层：中医辨证层 (Chinese Medicine Layer)</h3>
+<ul>
+<li>  <strong>输入特征</strong>：</li>
+<li>  *舌象AI特征*：舌色、苔色、苔质、舌形。</li>
+<li>  *九种体质自测得分*：平和质、气虚质、阳虚质、阴虚质、痰湿质、湿热质、血瘀质、气郁质、特秉质。</li>
+<li>  <strong>处理规则</strong>：基于辨证推理规则，将舌象图像提取结果与体质相似度结合，推导当前证候分型（如阴虚燥热证、心脉瘀阻证、脾虚湿盛证）。</li>
+</ul>
+<h3>2.3 第三层：风险评估层 (Risk Assessment Layer)</h3>
+<ul>
+<li>  <strong>融合算法逻辑</strong>：</li>
+<li>  将西医疾病发病概率与中医体质偏颇度（体质偏离平衡的斜率）结合，利用模型评估用户在未来30天内的体质偏移方向与疾病恶化轨迹。</li>
+<li>  输出综合健康指数得分（0-100分），并向业务端输出触发对应的风险评级。</li>
+</ul>
+<hr style="border:none; border-top:1px solid var(--border-color); margin:30px 0;">
+<h2>3. 五级风险分级评估与典型场景定义</h2>
+<p>平台根据 AI 模型底座的推理结果，将健康状态划分为五个等级，执行差异化的响应策略与服务入口。</p>
+<h3>3.1 五级预警与响应策略矩阵</h3>
+<table>
+<thead><tr>
+<th>级别</th>
+<th>风险状态</th>
+<th>触发条件</th>
+<th>响应策略</th>
+<th>服务入口</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>一级 🟢</strong></td>
+<td>健康维护</td>
+<td>体质指标正常，九种体质中“平和质”得分高，各项生理指标无异常。</td>
+<td>系统自动推送二十四节气养生调理及常规健康科普。</td>
+<td>健康管家</td>
+</tr>
+<tr>
+<td><strong>二级 🔵</strong></td>
+<td>体质调理</td>
+<td>体质偏颇倾向明显（如气虚质分值 $\ge 40$），但西医理化指标无异常。</td>
+<td>自动匹配并推送针对性的中医养生方案、药膳茶饮包。</td>
+<td>专题服务</td>
+</tr>
+<tr>
+<td><strong>三级 🟡</strong></td>
+<td>亚健康干预</td>
+<td>单项生理指标临界异常（如血压偏高），或睡眠时长持续不足。</td>
+<td>自动下发专科问卷，将智能硬件数据采集频率提升（如心率采集由5分钟/次调为1分钟/次），健管师主动电话随访。</td>
+<td>健康咨询</td>
+</tr>
+<tr>
+<td><strong>四级 🟠</strong></td>
+<td>疾病预警</td>
+<td>疾病发病风险显著，多项西医指标异常或高度体质偏移。</td>
+<td>警报强提醒，建议用户在7日内至专科就诊，生成并推送中西医结合调理方案，医生端审核方案。</td>
+<td>诊疗指导</td>
+</tr>
+<tr>
+<td><strong>五级 🔴</strong></td>
+<td>急救响应</td>
+<td>急性疾病风险突发，或生理指标达到危急值（如疑似ACS）。</td>
+<td>自动通知紧急联系人，回传实时 GPS，将脱敏病历摘要一键发送至120急救调度大屏。</td>
+<td>绿色通道</td>
+</tr>
+</tbody></table>
+<hr style="border:none; border-top:1px solid var(--border-color); margin:30px 0;">
+<h3>3.2 两个典型业务场景的算法与流程细化</h3>
+<h4>3.2.1 典型场景一：糖尿病前期 (四级预警)</h4>
+<ul>
+<li>  <strong>触发条件 (Inputs)</strong>：</li>
+<li>  *西医*：空腹血糖 (FPG) 波动在 $6.1 - 6.9$ mmol/L (如本次监测值为 $6.3$ mmol/L)。</li>
+<li>  *行为*：智能穿戴设备监测到连续3天每日睡眠时长 $< 5.5$ 小时。</li>
+<li>  *中医*：体质自测中“阴虚质”分值 $\ge 60$ 且舌象识别为“舌红少苔”。</li>
+<li>  <strong>AI 融合分析过程</strong>：</li>
+<li>  *西医预测层*：10年内发病风险概率计算输出为 <strong>42%</strong>。</li>
+<li>  *中医辨证层*：判定为 <strong>“阴虚燥热证候”</strong>。</li>
+<li>  <strong>业务输出响应 (Outputs)</strong>：</li>
+<li>  1.  系统评级判定为 <strong>四级（橙色）</strong>。</li>
+<li>  2.  <strong>就诊建议</strong>：生成指令“建议在 2 周内到内分泌科复查口服葡萄糖耐量试验 (OGTT)”。</li>
+<li>  3.  <strong>药食同源处方</strong>：推荐食用“葛根桑叶代用茶、山药麦冬炖排骨”以清热养阴。</li>
+<li>  4.  <strong>商城推荐联动</strong>：商城自动上架消渴症调理膏方，并打上“AI精准推荐”标志。</li>
+</ul>
+<h4>3.2.2 典型场景二：心血管急性事件 (五级红色急救)</h4>
+<ul>
+<li>  <strong>触发条件 (Inputs)</strong>：</li>
+<li>  *西医时序*：静息心率在3分钟内突增 $\ge 30\%$ (如从 $74$ bpm 骤升至 $108$ bpm)；血氧饱和度持续30秒 $< 92\%$。</li>
+<li>  *行为/症状*：睡眠监测显示深睡比例 $< 10\%$；用户一键点击反馈“胸闷主诉”或手表检测到重力跌落。</li>
+<li>  <strong>AI 融合分析过程</strong>：</li>
+<li>  *西医预测层*：发生“急性冠脉综合征 (ACS)”概率计算输出为 <strong>67%</strong>。</li>
+<li>  *中医辨证层*：判定为 <strong>“心脉瘀阻，气血逆乱证候”</strong>。</li>
+<li>  <strong>业务输出响应 (Outputs)</strong>：</li>
+<li>  1.  系统评级判定为 <strong>五级（红色）</strong>。</li>
+<li>  2.  <strong>家属告警</strong>：自动向绑定的紧急联系人发送 SOS 报警短信，内嵌患者实时高德/GPS位置链接。</li>
+<li>  3.  <strong>120联动</strong>：向120急救中心调度接口上传数据，包括患者定位、实时心率血氧及“既往冠心病史、药物过敏史”病历摘要。</li>
+<li>  4.  <strong>本地自救</strong>：锁屏界面强制弹出，提示“请勿乱动，已呼叫急救车。可按压内关穴、极泉穴以暂时缓解胸痛”。</li>
+</ul>
+<hr style="border:none; border-top:1px solid var(--border-color); margin:30px 0;">
+<h2>4. 个性化调理与药食同源商城联动机制</h2>
+<p>平台将中医“治未病”理论与物联网数据绑定，实现干预方案的动态微调与产品匹配。</p>
+<h3>4.1 药食同源商城精准匹配逻辑</h3>
+<ul>
+<li>  <strong>根据体质匹配商品</strong>：</li>
+<li>  *脾虚湿盛（气虚/痰湿质）* $\rightarrow$ 自动在首页高亮推荐“赤小豆芡实茶 (代用茶)”、“人参黄精膏 (调理膏方)”。</li>
+<li>  *阴虚燥热（阴虚/湿热质）* $\rightarrow$ 自动推荐“葛根桑叶茶”、“龙牙百合羹”。</li>
+<li>  <strong>根据穿戴指标联动推荐</strong>：</li>
+<li>  *深睡比例 $< 15\%$* $\rightarrow$ 智能推荐“御草堂艾草老姜足浴包”，并在打卡计划中添加“每晚21:00足浴打卡任务”。</li>
+<li>  *心率波动偏大/易疲劳* $\rightarrow$ 智能推荐“西洋参麦冬代用茶”，配以“健康大模型”的使用科普文章。</li>
+</ul>
+<h3>4.2 调理方案四维动态追踪卡片</h3>
+<ul>
+<li>  <strong>膳食茶饮</strong>：明确服用频次与禁忌（如脾虚湿盛忌生冷）。</li>
+<li>  <strong>经络理疗</strong>：指定具体穴位（如太溪、足三里）、按揉手法、按揉时间（结合子午流注，如肾经流注时间按揉太溪穴）。</li>
+<li>  <strong>起居作息</strong>：结合手表睡眠数据，动态微调深睡目标，提供呼吸助眠工具。</li>
+<li>  <strong>节气提醒</strong>：结合二十四节气，根据体质在换季前3天自动调整调理成分比例。</li>
+</ul>
+<hr style="border:none; border-top:1px solid var(--border-color); margin:30px 0;">
+<h2>5. 多角色协同交互流程与功能清单</h2>
+<p>平台围绕“居民自测 - 健管师日常随访 - 医生高危复核 - 管理端运营”建立四端协同机制。</p>
+<div class="mermaid">
+sequenceDiagram
+    autonumber
+    actor Resident as 居民 (APP)
+    actor Manager as 健管师 (移动随访端)
+    actor Doctor as 临床医生 (HIS端)
+    participant AI as AI决策引擎
+
+    Resident->>AI: 佩戴手表并自拍舌象上传
+    AI->>Resident: 生成健康评分与体质标签
+    Note over AI: 触发二级警告 (气虚兼痰湿)
+    AI->>Manager: 健管师端提示异常，自动分派随访工单
+    Manager->>Resident: 下发饮食经络打卡计划，并在线沟通
+    Note over Resident: 触发四级糖尿病预警 (血糖6.3)
+    AI->>Doctor: 医生HIS端弹出黄色气泡预警
+    Doctor->>Resident: 审核干预方案，一键复核就诊建议并推荐挂号
+    Resident->>Doctor: 回院预约挂号复诊
+</div>
+<h3>5.1 核心功能清单</h3>
+<table>
+<thead><tr>
+<th>功能模块</th>
+<th>功能名称</th>
+<th>业务规则描述</th>
+<th>优先级</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>数据采集</strong></td>
+<td>物联网生理数据同步</td>
+<td>实时拉取智能手表的脉搏、心率、血氧、睡眠数据。</td>
+<td><strong>P0</strong></td>
+</tr>
+<tr>
+<td><strong>数据采集</strong></td>
+<td>中医舌象AI拍照</td>
+<td>校验光线与张口度，AI自动提取舌质、苔色、齿痕等特征。</td>
+<td><strong>P0</strong></td>
+</tr>
+<tr>
+<td><strong>AI决策</strong></td>
+<td>三层融合模型推理</td>
+<td>西医慢病发生率、中医辨证推导与五级预警状态匹配计算。</td>
+<td><strong>P0</strong></td>
+</tr>
+<tr>
+<td><strong>预警处置</strong></td>
+<td>糖尿病前期模拟器</td>
+<td>一键模拟四级评级升级、FPG 6.3 mmol/L 数据改变与诊疗建议。</td>
+<td><strong>P0</strong></td>
+</tr>
+<tr>
+<td><strong>预警处置</strong></td>
+<td>五级红色急救系统</td>
+<td>倒计时防误触、家属SOS短信定位发送、120调度平台API对接。</td>
+<td><strong>P0</strong></td>
+</tr>
+<tr>
+<td><strong>健管师随访</strong></td>
+<td>随访工单与量表下发</td>
+<td>支持健管师查看管辖范围内的预警工单，一键发送问卷与调理包。</td>
+<td><strong>P0</strong></td>
+</tr>
+<tr>
+<td><strong>医生复核</strong></td>
+<td>HIS接诊助手</td>
+<td>HIS系统侧边栏调阅患者院外3个月时序曲线，复核干预处方。</td>
+<td><strong>P1</strong></td>
+</tr>
+<tr>
+<td><strong>干预方案</strong></td>
+<td>四维动态追踪卡片</td>
+<td>包含膳食、经络理疗（按子午流注指引）、作息打卡及节气提醒。</td>
+<td><strong>P0</strong></td>
+</tr>
+<tr>
+<td><strong>健康商城</strong></td>
+<td>药食同源推荐引擎</td>
+<td>根据体质标签及物联网指标联动推荐，并对四/五级限购。</td>
+<td><strong>P0</strong></td>
+</tr>
+<tr>
+<td><strong>AI客服</strong></td>
+<td>大模型问答助手</td>
+<td>RAG技术知识库，结合用户动态画像与体质，实现个性化问答。</td>
+<td><strong>P1</strong></td>
+</tr>
+</tbody></table>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 初始化 Mermaid
+            if (typeof mermaid !== 'undefined') {
+                mermaid.initialize({ startOnLoad: false, theme: 'default' });
+                mermaid.run();
+            }
+        });
+    </script>
+</body>
+</html>

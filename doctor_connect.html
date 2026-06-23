@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>医患社交关系闭环演练 - AI主动健康平台</title>
+    <meta name="description" content="高保真双机联动模拟器：演示C端搜医生-申请好友-B端审批同意-开启双端实时会话的业务闭环。">
+    <link rel="stylesheet" href="style_connect.css">
+</head>
+<body>
+
+    <!-- 全局关系成立微光成功特效遮罩 -->
+    <div class="glow-success-overlay" id="glowSuccess"></div>
+
+    <!-- 顶部全局导航 -->
+    <nav class="global-nav">
+        <a href="index.html" class="back-btn">
+            <svg viewBox="0 0 24 24">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+            返回主动健康大屏
+        </a>
+        <div class="nav-title">中西医一体化医患关系与实时通信演练</div>
+        <div style="width: 120px;"></div> <!-- 占位平衡 -->
+    </nav>
+
+    <!-- 核心双端工作区 -->
+    <div class="workspace-container">
+        
+        <!-- ==================== 左侧：C端 居民端模拟手机 ==================== -->
+        <div class="phone-mockup client-side" id="clientPhone">
+            <div class="phone-notch"></div>
+            
+            <div class="phone-status-bar">
+                <span class="status-left">10:06</span>
+                <div class="status-right">
+                    <!-- 信号图标 -->
+                    <svg class="status-icon" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm1 13.5h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+                    <!-- 电池图标 -->
+                    <svg class="status-icon" viewBox="0 0 24 24"><path d="M17 5H3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/></svg>
+                </div>
+            </div>
+            
+            <div class="phone-screen">
+                <!-- 列表页面板 -->
+                <div class="view-panel active" id="clientDocListPanel">
+                    <div class="phone-header">
+                        <h2>查找我的调理医生</h2>
+                    </div>
+                    
+                    <div class="search-bar-container">
+                        <svg class="search-icon" viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                        <input type="text" class="search-input" id="docSearchInput" placeholder="搜索医生姓名、科室或调理方向...">
+                    </div>
+                    
+                    <div class="doctor-list" id="clientDocList">
+                        <!-- 医生卡片由 JS 动态生成 -->
+                    </div>
+                </div>
+
+                <!-- 居民端聊天面板 -->
+                <div class="view-panel slide-in-right" id="clientChatPanel">
+                    <div class="chat-room-header">
+                        <div class="chat-back-btn" onclick="closeChatView()">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                            </svg>
+                        </div>
+                        <div class="chat-title-group">
+                            <span class="chat-room-title" id="clientChatTitle">张景岳 (调理顾问)</span>
+                            <span class="chat-room-status">在线</span>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-messages-container" id="clientChatMessages">
+                        <!-- 聊天消息气泡流 -->
+                    </div>
+                    
+                    <div class="chat-footer">
+                        <input type="text" class="chat-text-input" id="clientMsgInput" placeholder="给医生发送消息..." onkeypress="handleChatKey(event, 'client')">
+                        <button class="chat-btn-send" onclick="sendChatMessage('client')">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 申请添加好友弹窗组件 -->
+                <div class="drawer-overlay" id="requestDrawerOverlay" onclick="closeRequestDrawer()">
+                    <div class="drawer-content" onclick="event.stopPropagation()">
+                        <span class="drawer-title">发送好友申请</span>
+                        <textarea class="request-textarea" id="requestNoteInput" placeholder="输入申请留言，说明您的健康调理咨询需求..."></textarea>
+                        <div class="drawer-actions">
+                            <button class="drawer-btn cancel" onclick="closeRequestDrawer()">取消</button>
+                            <button class="drawer-btn send" onclick="sendFriendRequest()">发送申请</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== 中间：流光连接连线组件 ==================== -->
+        <div class="flow-connector">
+            <span class="step-flow-indicator" id="connectorStatus">等待发起通信</span>
+            <div class="connector-line-box">
+                <div class="connector-dot" id="connectorDot"></div>
+            </div>
+            <span style="font-size: 9px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1.5px;">WebSocket Channel</span>
+        </div>
+
+        <!-- ==================== 右侧：B端 医生/健管师端模拟手机 ==================== -->
+        <div class="phone-mockup doctor-side" id="doctorPhone">
+            <div class="phone-notch"></div>
+            
+            <div class="phone-status-bar">
+                <span class="status-left">10:06</span>
+                <div class="status-right">
+                    <svg class="status-icon" viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm1 13.5h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+                    <svg class="status-icon" viewBox="0 0 24 24"><path d="M17 5H3a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/></svg>
+                </div>
+            </div>
+            
+            <div class="phone-screen">
+                <!-- 申请通知列表页 -->
+                <div class="view-panel active" id="docRequestListPanel">
+                    <div class="phone-header">
+                        <h2>我的工作台</h2>
+                        <span class="noti-badge">工作台</span>
+                    </div>
+
+                    <!-- 医生个人信息与配置入口 -->
+                    <div class="doc-profile-card">
+                        <div class="doc-profile-header">
+                            <div class="doc-profile-avatar" id="currentDocAvatar">岳</div>
+                            <div class="doc-profile-info">
+                                <div class="doc-profile-name" id="currentDocName">张景岳</div>
+                                <div class="doc-profile-title" id="currentDocTitle">主任医师</div>
+                                <div class="doc-profile-desc-tags" id="currentDocTags">心血管专科 / 气脉调理</div>
+                            </div>
+                        </div>
+                        <div class="doc-profile-actions">
+                            <button class="profile-action-btn" onclick="openDocProfileSettings()">
+                                <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                                主页配置
+                            </button>
+                            <button class="profile-action-btn" onclick="openDocAccountSettings()">
+                                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                                账号安全
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 消息通知红点条 -->
+                    <div class="notification-bar" id="docNotificationBar" style="display: none;" onclick="openRequestDetail()">
+                        <div class="noti-left">
+                            <div class="noti-red-dot"></div>
+                            <span>收到一条新的居民好友申请</span>
+                        </div>
+                        <span class="noti-badge">1</span>
+                    </div>
+                    
+                    <div style="text-align: center; color: var(--text-muted); font-size: 11px; margin-top: 60px;" id="docPlaceholderText">
+                        暂无患者随访请求，等待左侧居民发起...
+                    </div>
+                </div>
+
+                <!-- 申请审批详情页 -->
+                <div class="view-panel slide-in-right" id="docRequestDetailPanel">
+                    <div class="phone-header">
+                        <div class="chat-back-btn" onclick="closeRequestDetail()">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                            </svg>
+                        </div>
+                        <h2>好友申请详情</h2>
+                        <div style="width: 20px;"></div>
+                    </div>
+                    
+                    <div class="request-panel">
+                        <div class="request-card">
+                            <div class="req-header">
+                                <div class="req-user-info">
+                                    <div class="user-avatar-circle">明</div>
+                                    <div class="user-meta">
+                                        <span class="user-name" id="reqUserName">王小明</span>
+                                        <span class="user-tag" id="reqUserTag">脾虚湿盛质</span>
+                                    </div>
+                                </div>
+                                <span class="req-date">刚刚</span>
+                            </div>
+                            
+                            <div style="font-size: 10px; color: var(--text-secondary);">患者申请留言备注：</div>
+                            <div class="req-note-box" id="reqUserNote">
+                                “ 您好，我是王小明（脾虚湿盛体质）。我最近老是失眠，并伴有轻微胸闷，想申请添加您为调理顾问。 ”
+                            </div>
+                            
+                            <div style="font-size: 9px; color: var(--text-muted); line-height: 1.4; border-top: 1px solid rgba(255,255,255,0.03); padding-top: 10px;">
+                                💡 系统提示：点击同意后，患者将自动绑定到您的随访列表，并开启专属即时通信通道。
+                            </div>
+                            
+                            <div class="req-actions">
+                                <button class="req-btn reject" onclick="rejectFriendRequest()">拒绝</button>
+                                <button class="req-btn accept" onclick="acceptFriendRequest()">同意并开启会话</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 医生端聊天面板 -->
+                <div class="view-panel slide-in-right" id="docChatPanel">
+                    <div class="chat-main-layout">
+                        <!-- 左栏：聊天对话区 -->
+                        <div class="chat-conversation-area">
+                            <div class="chat-room-header">
+                                <div class="chat-back-btn" onclick="closeChatView()">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                                    </svg>
+                                </div>
+                                <div class="chat-title-group">
+                                    <span class="chat-room-title" id="docChatTitle">王小明 (居民)</span>
+                                    <span class="chat-room-status" style="color:var(--accent);">在线</span>
+                                </div>
+                            </div>
+                            
+                            <div class="chat-messages-container" id="docChatMessages">
+                                <!-- 聊天消息气泡流 -->
+                            </div>
+
+                            <!-- 常用话术快捷工具条 -->
+                            <div class="chat-quick-templates" style="flex-wrap: wrap; gap: 6px; height: auto; max-height: none;">
+                                <select id="docChatQuickSelect" style="font-size:11px; padding:4px 8px; background:var(--bg-panel); color:var(--text-primary); border:1px solid var(--border-color); border-radius:12px; outline:none; cursor:pointer;" onchange="useQuickReply(this.value)">
+                                    <option value="">💬 快捷回复话术...</option>
+                                    <!-- 由 JS 动态渲染 -->
+                                </select>
+                                <button onclick="openEditQuickRepliesModal()" style="font-size:11px; padding:4px 8px; background:var(--bg-panel); color:var(--text-primary); border:1px solid var(--border-color); border-radius:12px; cursor:pointer; outline:none;">⚙️ 编辑</button>
+                                <select id="docChatRecipeSelect" style="font-size:11px; padding:4px 8px; background:var(--bg-panel); color:var(--text-primary); border:1px solid var(--border-color); border-radius:12px; outline:none; cursor:pointer;" onchange="sendConfiguredRecipe(this.value)">
+                                    <option value="">📋 发送个性化方案...</option>
+                                    <!-- JS 动态加载 -->
+                                </select>
+                            </div>
+                            
+                            <div class="chat-footer">
+                                <input type="text" class="chat-text-input" id="docMsgInput" placeholder="回复患者..." onkeypress="handleChatKey(event, 'doctor')">
+                                <button class="chat-btn-send" onclick="sendChatMessage('doctor')">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 医生执业主页配置弹窗 Drawer -->
+                <div class="drawer-overlay" id="docProfileDrawer">
+                    <div class="drawer-content" onclick="event.stopPropagation()">
+                        <span class="drawer-title">执业主页配置</span>
+                        <div class="form-group">
+                            <label class="form-label">擅长标签 (多个请用分号分隔)</label>
+                            <input type="text" class="form-input" id="docTagsInput" placeholder="例如：心血管专科; 气脉调理">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">擅长长文本诊疗特色介绍 (限500字)</label>
+                            <textarea class="request-textarea" id="docDescInput" placeholder="输入详细特色诊疗擅长介绍..." maxlength="500" oninput="updateCharCount()"></textarea>
+                            <span class="char-count" id="charCountLabel">0 / 500</span>
+                        </div>
+                        <div class="drawer-actions">
+                            <button class="drawer-btn cancel" onclick="closeDocProfileSettings()">取消</button>
+                            <button class="drawer-btn send" onclick="saveDocProfileSettings()">保存配置</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 医生个人账号安全设置弹窗 Drawer -->
+                <div class="drawer-overlay" id="docAccountDrawer">
+                    <div class="drawer-content" onclick="event.stopPropagation()">
+                        <span class="drawer-title">账号安全设置</span>
+                        
+                        <!-- 选项卡 -->
+                        <div class="account-setting-tabs">
+                            <div class="tab-btn active" id="tabBtnPassword" onclick="switchAccountTab('password')">修改密码</div>
+                            <div class="tab-btn" id="tabBtnPhone" onclick="switchAccountTab('phone')">手机换绑</div>
+                        </div>
+
+                        <!-- 密码修改部分 -->
+                        <div class="tab-content active" id="tabContentPassword">
+                            <div class="form-group">
+                                <label class="form-label">原密码</label>
+                                <input type="password" class="form-input" id="oldPassword" placeholder="输入当前登录密码">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">新密码</label>
+                                <input type="password" class="form-input" id="newPassword" placeholder="输入新密码">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">确认新密码</label>
+                                <input type="password" class="form-input" id="confirmPassword" placeholder="再次输入新密码">
+                            </div>
+                            <div class="drawer-actions" style="margin-top: 10px;">
+                                <button class="drawer-btn cancel" onclick="closeDocAccountSettings()">取消</button>
+                                <button class="drawer-btn send" onclick="submitPasswordChange()">提交修改</button>
+                            </div>
+                        </div>
+
+                        <!-- 手机安全换绑部分 -->
+                        <div class="tab-content" id="tabContentPhone" style="display: none;">
+                            <div class="phone-status-display">
+                                <span>当前绑定手机号：</span>
+                                <strong id="currentBindPhone">138****8888</strong>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">新手机号</label>
+                                <input type="text" class="form-input" id="newPhoneInput" placeholder="输入新手机号">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">验证码</label>
+                                <div class="sms-code-group">
+                                    <input type="text" class="form-input sms-input" id="smsCodeInput" placeholder="6位验证码">
+                                    <button class="sms-send-btn" id="smsSendBtn" onclick="sendSmsVerification()">获取验证码</button>
+                                </div>
+                            </div>
+                            <div class="drawer-actions" style="margin-top: 10px;">
+                                <button class="drawer-btn cancel" onclick="closeDocAccountSettings()">取消</button>
+                                <button class="drawer-btn send" onclick="submitPhoneChange()">安全换绑</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+    </div>
+
+    <!-- 快捷回复编辑弹窗 Modal -->
+    <div class="modal-overlay" id="quick-reply-edit-modal" style="z-index: 1100; display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center;">
+        <div class="modal-content" style="max-width: 500px; width: 90%; background: var(--bg-panel); backdrop-filter: blur(20px); border: 1px solid var(--border-color); box-shadow: 0 20px 40px rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; color: var(--text-primary);">
+            <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                <h3 style="margin:0; font-size:15px; font-weight:600;">配置聊天快捷回复</h3>
+                <span class="modal-close" onclick="closeQuickRepliesModal()" style="cursor:pointer; font-size:18px;">✕</span>
+            </div>
+            <div class="modal-body">
+                <div style="display:flex; gap:8px; margin-bottom:12px;">
+                    <input type="text" id="new-quick-reply-text" placeholder="输入新的快捷回复内容..." style="flex:1; padding:6px 12px; font-size:12px; background:rgba(255,255,255,0.05); color:var(--text-primary); border:1px solid var(--border-color); border-radius:6px; outline:none;">
+                    <button class="btn btn-primary" onclick="addQuickReply()" style="padding:6px 12px; font-size:12px; background:var(--primary); color:white; border:none; border-radius:6px; cursor:pointer;">添加</button>
+                </div>
+                <div id="quick-replies-manage-list" style="max-height: 200px; overflow-y: auto; display:flex; flex-direction:column; gap:8px; background:rgba(0,0,0,0.1); padding:8px; border-radius:6px; border:1px solid var(--border-color);">
+                    <!-- JS 动态渲染 -->
+                </div>
+            </div>
+            <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:10px; margin-top:15px; border-top: 1px solid var(--border-color); padding-top: 8px;">
+                <button class="btn btn-secondary" onclick="closeQuickRepliesModal()" style="padding:6px 12px; font-size:12px; background:var(--bg-panel); color:var(--text-primary); border:1px solid var(--border-color); border-radius:6px; cursor:pointer;">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引用核心联动脚本 -->
+    <script src="app_connect.js"></script>
+</body>
+</html>
